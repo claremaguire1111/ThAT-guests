@@ -4,50 +4,87 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Explore the AE Global Summit</title>
-<meta name="description" content="Fly through Friends House in 3D: the rooms of the AE Global Summit 2026, what is on each day, the speakers and the team.">
+<meta name="description" content="Fly through Friends House in 3D: the rooms of the AE Global Summit 2026, what is on each day, and galaxies of the speakers, sponsors and team.">
 <link rel="icon" type="image/png" href="icon.png">
 <meta name="theme-color" content="#0B1022">
-<link href="https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--navy:#0E1630;--navy2:#24345C;--ink:#14161c;--cream:#F6F1E6;--gold:#F2B766;--accent:#E8894A;--soft:#5b6070;--line:rgba(20,22,28,.12)}
 *{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:#05070f;font:400 15px/1.5 Inter,system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
 #gl{position:fixed;inset:0}#gl canvas{display:block;touch-action:none}
-#labels{position:fixed;inset:0;pointer-events:none}
+#labels,#glabels{position:fixed;inset:0;pointer-events:none}#glabels{display:none}
+body.gmode #labels{display:none}body.gmode #glabels{display:block}
 .rl{font-family:Cardo,serif;color:#fff;text-align:center;text-shadow:0 2px 12px rgba(0,0,0,.8);white-space:nowrap;transition:opacity .3s}
 .rl b{display:block;font-size:17px;font-weight:700;letter-spacing:.01em}.rl span{display:block;font:600 9.5px Inter;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
 .rl.big b{font-size:28px;font-style:italic;font-weight:400}.rl.dim{opacity:.35}
 .tl{font:600 12px Inter;color:#fff;text-align:center;white-space:nowrap;background:rgba(10,14,30,.72);border:1px solid rgba(242,183,102,.5);padding:3px 9px;border-radius:999px;backdrop-filter:blur(4px)}
 .tl small{display:block;font-weight:500;font-size:10px;color:var(--gold)}
+.tl.wall{border-color:var(--gold);background:var(--gold);color:var(--navy)}.tl.wall small{color:var(--navy);opacity:.8}
 .dl{font:600 11px Inter;color:#0E1630;background:var(--gold);padding:3px 8px;border-radius:999px;white-space:nowrap}
+/* galaxy labels */
+.gname{font:600 12px Inter;color:#fff;text-align:center;white-space:nowrap;text-shadow:0 1px 8px rgba(0,0,0,.9);transition:opacity .25s;margin-top:4px}
+.gname small{display:block;font-weight:500;font-size:10.5px;color:var(--gold);letter-spacing:.02em}
+.gname.team{background:rgba(6,9,20,.7);border:1px solid rgba(242,183,102,.45);border-radius:12px;padding:4px 10px;font-size:13px}
+.garm{font-family:Cardo,serif;color:#fff;text-align:center;white-space:nowrap;text-shadow:0 2px 14px rgba(0,0,0,.9)}
+.garm b{display:block;font-size:22px;font-style:italic;font-weight:400}.garm span{display:block;font:600 9.5px Inter;letter-spacing:.18em;text-transform:uppercase}
+.gtier{font:600 9.5px Inter;letter-spacing:.22em;text-transform:uppercase;white-space:nowrap;text-shadow:0 1px 6px #000,0 0 14px #000}
+.gcore{font-family:Cardo,serif;color:#fff;text-align:center;white-space:nowrap;text-shadow:0 2px 14px rgba(0,0,0,.9)}.gcore b{display:block;font-size:15px;font-style:italic;font-weight:400}.gcore span{display:block;font:600 9px Inter;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
 /* UI */
 .top{position:fixed;left:16px;right:16px;top:14px;display:flex;align-items:center;gap:10px;pointer-events:none;z-index:5;flex-wrap:wrap}
 .top>*{pointer-events:auto}
 .glass{background:rgba(10,14,30,.6);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.14);border-radius:999px;color:#fff}
 .brand{display:flex;align-items:center;gap:10px;padding:8px 14px 8px 10px}.brand img{height:22px}.brand b{font-family:Cardo,serif;font-size:17px}.brand span{font-size:12px;opacity:.7}
 .seg{display:flex;padding:4px}.seg button{border:0;background:none;color:#cfd6e8;font:600 13px Inter;padding:7px 13px;border-radius:999px;cursor:pointer}.seg button.on{background:var(--gold);color:var(--navy)}
+.gx button{display:flex;align-items:center;gap:6px}.gx button i{font-style:normal;color:var(--gold);font-size:11px}.gx button.on i{color:var(--navy)}
+.gx button:hover:not(.on){background:rgba(242,183,102,.18)}
+.back{display:none;border:0;cursor:pointer;font:600 13px Inter;padding:10px 16px;background:var(--cream);color:var(--navy);border-radius:999px;box-shadow:0 6px 24px rgba(0,0,0,.4)}
+.back:hover{background:#fff}
+body.gmode .back{display:inline-block}
+body.gmode #days,body.gmode #floors,body.gmode .mini,body.gmode .found,body.gmode #hint{display:none}
 .sp{flex:1}.found{padding:8px 14px;font-size:13px}.found b{color:var(--gold)}
 .mini{display:flex;gap:6px;padding:5px 8px}.mini button{border:0;background:rgba(255,255,255,.08);color:#fff;font:500 12px Inter;padding:6px 10px;border-radius:999px;cursor:pointer}.mini button:hover{background:rgba(242,183,102,.25)}
 .panel{position:fixed;right:16px;top:74px;bottom:16px;width:380px;background:var(--cream);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.5);transform:translateX(420px);transition:transform .35s cubic-bezier(.2,.8,.2,1);z-index:6;display:flex;flex-direction:column;overflow:hidden}
 .panel.open{transform:none}
 .ph{padding:20px 22px 14px;background:linear-gradient(135deg,#0E1630,#2a3c6a);color:#fff;position:relative}
-.ph .k{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:600}
+.ph .k{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:600;padding-right:34px}
 .ph h2{font-family:Cardo,serif;font-weight:400;font-style:italic;font-size:30px;margin:4px 0 2px;line-height:1.05}.ph p{margin:0;opacity:.85;font-size:14px}
-.ph .av[hidden]{display:none}.ph .av{width:84px;height:84px;border-radius:50%;object-fit:cover;object-position:center 25%;border:3px solid var(--gold);margin-bottom:10px;display:block}
+.ph .av[hidden],.ph .logo[hidden]{display:none}.ph .av{width:84px;height:84px;border-radius:50%;object-fit:cover;object-position:center 25%;border:3px solid var(--gold);margin-bottom:10px;display:block}
+.ph .logo{background:#fff;border-radius:14px;height:88px;margin:0 34px 12px 0;display:flex;align-items:center;justify-content:center;padding:14px 22px}.ph .logo img{max-height:58px;max-width:100%;object-fit:contain}
 .x{position:absolute;right:12px;top:10px;border:0;background:rgba(255,255,255,.14);color:#fff;width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer}
 .pb{padding:16px 22px 24px;overflow:auto;flex:1}.pb h3{font-family:Cardo,serif;font-size:19px;margin:14px 0 6px}.pb p{margin:6px 0;color:#30343f}
+.pb .note{font-size:13px;color:var(--soft)}
 .tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.06em;padding:3px 9px;border-radius:999px;background:#ece4d3;color:#6b5320;margin:0 4px 4px 0}.tag.live{background:#e3efe3;color:#2d6a3a}.tag.closed{background:#eee;color:#888}
 .sess{display:grid;grid-template-columns:54px 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
 .sess .t{font-size:12px;font-weight:600;color:var(--navy2);font-variant-numeric:tabular-nums;padding-top:2px}.sess b{font-family:Cardo,serif;font-size:16px;display:block;line-height:1.25}
+.sess small{display:block;color:var(--soft);font-size:12px;margin:2px 0 4px}
 .faces{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 .face{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:2px 10px 2px 2px;font-size:12px;cursor:pointer}
+.face:hover{border-color:var(--gold)}
 .face img,.face i{width:26px;height:26px;border-radius:50%;object-fit:cover;object-position:center 25%;background:#d9d2c3;display:block}
-.who{display:none;margin-top:8px;background:#fff;border-radius:12px;padding:12px;border:1px solid var(--line)}.who.on{display:flex;gap:12px;align-items:center}
+.face.lg{padding-left:6px}.face.lg img{width:46px;height:22px;border-radius:4px;object-fit:contain;background:#fff}
+.who{display:none;margin-top:8px;background:#fff;border-radius:12px;padding:12px;border:1px solid var(--line)}.who.on{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 .who img{width:64px;height:64px;border-radius:50%;object-fit:cover;object-position:center 25%}.who b{font-family:Cardo,serif;font-size:18px;display:block}.who span{font-size:13px;color:var(--soft)}
-.go{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.go button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font:500 13px Inter;cursor:pointer}
+.who .go{width:100%;margin-top:4px}
+.go{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.go button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font:500 13px Inter;cursor:pointer}.go button:hover{border-color:var(--gold)}
+.go button.gal{background:var(--navy);color:#fff;border-color:var(--navy)}.go button.gal:hover{background:var(--navy2)}
 .btn{display:inline-block;background:var(--navy);color:#fff;text-decoration:none;border-radius:999px;padding:10px 16px;font-weight:600;font-size:14px;margin-top:10px}
 .hint{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);padding:9px 16px;font-size:13px;z-index:4;white-space:nowrap;transition:opacity 1s}
-.toast{position:fixed;left:50%;top:80px;transform:translate(-50%,-20px);opacity:0;transition:all .4s;background:var(--gold);color:var(--navy);padding:12px 18px;border-radius:14px;font-weight:600;max-width:min(520px,90vw);z-index:7;box-shadow:0 10px 30px rgba(0,0,0,.35);text-align:center}
+.toast{position:fixed;left:50%;top:80px;transform:translate(-50%,-20px);opacity:0;transition:all .4s;background:var(--gold);color:var(--navy);padding:12px 18px;border-radius:14px;font-weight:600;max-width:min(520px,90vw);z-index:7;box-shadow:0 10px 30px rgba(0,0,0,.35);text-align:center;pointer-events:none}
 .toast.on{opacity:1;transform:translate(-50%,0)}.toast small{display:block;font-weight:500;opacity:.85;font-size:12px}
+/* credit */
+.credit{position:fixed;left:16px;bottom:16px;z-index:4;display:flex;align-items:center;gap:8px;padding:6px 12px 6px 7px;font:500 11.5px Inter;color:rgba(255,255,255,.82);background:rgba(6,9,20,.62);border:1px solid rgba(242,183,102,.32);border-radius:999px;backdrop-filter:blur(8px);letter-spacing:.01em;pointer-events:none}
+.credit svg{width:18px;height:18px;flex:none}
+.intro .credit{position:absolute;z-index:1}
+/* galaxy title card + warp */
+.gtitle{position:fixed;left:0;right:0;top:40%;transform:translateY(-50%);text-align:center;color:#fff;z-index:4;pointer-events:none;opacity:0}
+.gtitle small{display:block;font:600 11px Inter;letter-spacing:.32em;text-transform:uppercase;color:var(--gold)}
+.gtitle b{display:block;font-family:Cardo,serif;font-weight:400;font-style:italic;font-size:clamp(44px,8vw,92px);line-height:1.05;margin:8px 0 6px;text-shadow:0 4px 40px rgba(0,0,0,.8)}
+.gtitle span{display:block;font-size:14px;opacity:.85}
+.gtitle.on{animation:title 3.4s ease forwards}
+@keyframes title{0%{opacity:0;letter-spacing:.12em;filter:blur(8px)}22%{opacity:1;letter-spacing:0;filter:blur(0)}70%{opacity:1}100%{opacity:0}}
+.warp{position:fixed;inset:0;z-index:8;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 50%,rgba(255,244,220,.95),rgba(242,183,102,.55) 30%,rgba(5,7,15,0) 70%)}
+.warp.on{animation:warp .9s ease-out forwards}
+@keyframes warp{0%{opacity:0;transform:scale(.4)}30%{opacity:1}100%{opacity:0;transform:scale(1.8)}}
 .intro{position:fixed;inset:0;z-index:10;display:grid;place-items:center;background:url(assets/team/cover.jpg) center/cover;padding:20px}
 .intro:before{content:"";position:absolute;inset:0;background:radial-gradient(900px 500px at 50% 45%,rgba(8,12,26,.35),rgba(5,7,15,.9))}
 .card{position:relative;max-width:580px;color:#fff;text-align:center}
@@ -55,34 +92,42 @@
 .card .k{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:600}
 .card h1{font-family:Cardo,serif;font-weight:400;font-style:italic;font-size:clamp(42px,7vw,72px);line-height:1;margin:10px 0}
 .card p{opacity:.9;font-size:16px;margin:0 auto 10px;max-width:480px}
+.card .guide{font-size:13px;opacity:.8;margin-top:14px}.card .guide b{color:var(--gold);font-weight:600}
 .keys{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:16px 0 22px}.keys span{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:10px;padding:8px 12px;font-size:13px}
 .start{border:0;background:var(--gold);color:var(--navy);font:700 16px Inter;padding:14px 30px;border-radius:999px;cursor:pointer;box-shadow:0 0 40px rgba(242,183,102,.45)}
 .load{font-size:12px;opacity:.7;margin-top:12px}
-@media (max-width:760px){.panel{left:10px;right:10px;width:auto;top:auto;height:58vh;bottom:10px;transform:translateY(64vh)}.panel.open{transform:none}.brand span,.found,.mini{display:none}.top{left:10px;right:10px;top:10px}.hint{font-size:11px;bottom:10px}.rl b{font-size:13px}.rl.big b{font-size:20px}}
+@media (max-width:760px){body.gmode .brand,.gx button i,.back .full,.garm span{display:none}.gx button{padding:6px 8px}.panel{left:10px;right:10px;width:auto;top:auto;height:56vh;bottom:10px;transform:translateY(64vh)}.panel.open{transform:none}.brand span,.brand b,.found,.mini{display:none}.brand{padding:7px 9px}.top{left:10px;right:10px;top:10px;gap:6px}.seg button{padding:6px 9px;font-size:12px}.hint{font-size:11px;bottom:46px;white-space:normal;width:max-content;max-width:92vw;text-align:center}.rl b{font-size:13px}.rl.big b{font-size:20px}
+ .credit{left:10px;bottom:10px;font-size:10.5px}.ph h2{font-size:25px}.ph .av{width:64px;height:64px}.ph .logo{height:70px}.back{padding:8px 12px;font-size:12px}.card p{font-size:15px}.keys{margin:12px 0 16px}.keys span{font-size:12px;padding:6px 10px}.toast{top:112px}.garm b{font-size:16px}}
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 </head>
 <body>
-<div id="gl"></div><div id="labels"></div>
+<div id="gl"></div><div id="labels"></div><div id="glabels"></div>
 <div class="top">
   <div class="brand glass"><img src="assets/img/star.png" alt=""><b>AE Global Summit</b><span>Friends House · 25 to 27 Nov</span></div>
+  <button class="back" id="back">← <span class="full">Back to </span>Friends House</button>
   <div class="seg glass" id="days"><button data-d="wed" class="on">Wed 25</button><button data-d="thu">Thu 26</button><button data-d="fri">Fri 27</button></div>
   <div class="seg glass" id="floors"><button data-f="0" class="on">Ground</button><button data-f="1">First</button></div>
   <div class="mini glass"><button data-go="light">The Light</button><button data-go="foyer">Check-in</button><button data-go="team">Meet the team</button></div>
+  <div class="seg glass gx" id="gx"><button data-g="speakers"><i>✦</i>Speakers</button><button data-g="sponsors"><i>✦</i>Sponsors</button><button data-g="team"><i>✦</i>Team</button></div>
   <div class="sp"></div>
   <div class="found glass">Discoveries <b id="fc">0</b>/<span id="ft">0</span></div>
 </div>
-<aside class="panel" id="panel"><div class="ph"><img class="av" id="pav" alt="" hidden><div class="k" id="pk"></div><h2 id="pt"></h2><p id="ps"></p><button class="x" id="px" aria-label="Close">×</button></div><div class="pb" id="pb"></div></aside>
+<aside class="panel" id="panel"><div class="ph"><div class="logo" id="plogo" hidden><img alt=""></div><img class="av" id="pav" alt="" hidden><div class="k" id="pk"></div><h2 id="pt"></h2><p id="ps"></p><button class="x" id="px" aria-label="Close">×</button></div><div class="pb" id="pb"></div></aside>
 <div class="hint glass" id="hint">WASD or arrows to fly · tap the floor to glide · drag to look around</div>
 <div class="toast" id="toast"></div>
+<div class="gtitle" id="gtitle"><small></small><b></b><span></span></div>
+<div class="warp" id="warp"></div>
+<div class="credit" id="credit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.6 7.9 7.9 2.6-7.9 2.6L12 22.5l-2.6-7.9L1.5 12l7.9-2.6z" fill="#F2B766"/></svg><span>Built by Kestrel, the Thinking About Thinking AI Agent</span></div>
 <div class="intro" id="intro"><div class="card">
   <img src="assets/img/star.png" alt="">
   <div class="k">AE Global Summit 2026 · Open Problems for AI</div>
   <h1>Explore Friends House</h1>
-  <p>Fly through the Summit before you arrive. Step into the rooms, meet the speakers circling The Light, find the team at their posts, and collect discoveries on the way.</p>
-  <div class="keys"><span>⌨ WASD or arrows</span><span>👆 Tap to glide</span><span>🖱 Drag to look</span><span>🗓 Switch day</span></div>
+  <p>Fly through the Summit before you arrive. Step into the rooms, meet the speakers circling The Light, find the team at their posts and collect discoveries on the way. Then head out into the galaxies of speakers, sponsors and team.</p>
+  <div class="keys"><span>⌨ WASD or arrows</span><span>👆 Tap to glide</span><span>🖱 Drag to look</span><span>✦ Galaxies</span></div>
   <button class="start" id="start">Enter the Summit</button><div class="load" id="load">Loading the venue…</div>
-</div></div>
+  <div class="guide">Your guide: <b>Kestrel</b></div>
+</div><div class="credit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.6 7.9 7.9 2.6-7.9 2.6L12 22.5l-2.6-7.9L1.5 12l7.9-2.6z" fill="#F2B766"/></svg><span>Built by Kestrel, the Thinking About Thinking AI Agent</span></div></div>
 <script type="module">
 import * as THREE from 'three';
 import {CSS2DRenderer,CSS2DObject} from 'three/addons/renderers/CSS2DRenderer.js';
@@ -90,6 +135,7 @@ import {CSS2DRenderer,CSS2DObject} from 'three/addons/renderers/CSS2DRenderer.js
 const DAYS={wed:{name:'Wednesday 25 November',theme:'AI Research Breakthroughs and Infrastructure',doors:'08:15',start:'08:40',end:'16:30',coffee:'10:00 to 10:30'},
  thu:{name:'Thursday 26 November',theme:'AI Safety, Enterprise and Society',doors:'08:30',start:'09:00',end:'16:00',coffee:'10:30 to 11:00'},
  fri:{name:'Friday 27 November',theme:'AI Entrepreneurship and Applications',doors:'09:00',start:'09:30',end:'16:30',coffee:'10:30 to 11:00'}};
+const DN={wed:'Wednesday',thu:'Thursday',fri:'Friday'},DS={wed:'Wed 25',thu:'Thu 26',fri:'Fri 27'};
 const TICKETS='https://luma.com/8uu3vclv',SITE='https://www.algopreneurship.org';
 const FH=[ // ground floor schematic (2D plan units, x 300..1600, y 50..930)
  {id:'light',name:'The Light',k:'Main hall',x:820,y:200,w:480,h:500,c:0x6fd6c8,h3:7,big:1},
@@ -115,7 +161,7 @@ const TEAM=[
  {id:'ruairidh',n:'Dr Ruairidh Battleday',r:'Co-founder and CEO',img:'assets/team/ruairidh.png',x:985,y:243,f:0,html:'<p>Opens the Summit on Wednesday at 08:40 and chairs sessions across the three days.</p>'},
  {id:'james',n:'Prof James Whittington',r:'Co-founder and CSO',img:'assets/team/james.png',x:1135,y:243,f:0,html:'<p>Gives a keynote on Wednesday at 09:00, then chairs the fireside chat <i>AI that discovers</i> with Pushmeet Kohli.</p>'},
  {id:'celal',n:'Celal',r:'Head of Volunteers',img:'assets/team/celal.jpg',x:930,y:782,f:0,html:'<p>Leads the volunteer team and the front desk. Can\'t find your lanyard, or need help on the day? Find Celal at check-in.</p>'},
- {id:'anastasia',n:'Anastasia Ilina',r:'Speaker liaison',img:'assets/team/anastasia.png',x:1250,y:782,f:0,html:'<p>Looks after speakers and Patrons: the speakers desk, the Patron room in Ada Salter, and getting speakers miced up and ready to go on.</p>'},
+ {id:'anastasia',n:'Anastasia Ilina',r:'Speaker liaison',img:'assets/team/anastasia.png',x:875,y:130,f:0,html:'<p>Looks after speakers and Patrons in Ada Salter, the Patron and speaker room behind the stage, and gets speakers miced up and ready to go on.</p>'},
  {id:'gargi',n:'Gargi Bannur',r:'Main room operations',img:'assets/team/gargi.jpg',x:1250,y:330,f:0,html:'<p>Runs The Light: the doors, seating and the roving microphones for audience questions.</p>'}];
 const SPARKS=[
  {f:0,x:830,y:782,tip:'Lanyards are laid out by first name. Find the table with your first letter.'},
@@ -128,26 +174,55 @@ const SPARKS=[
  {f:1,x:580,y:330,tip:'Friday: founders meet investors in the VC office hours rooms.'},
  {f:0,x:660,y:110,tip:'Friday: Innovate UK and its Frontier AI companies take over Waldo Williams.'},
  {f:1,x:1090,y:520,tip:'The upper tiers of The Light have more seats with a view from above.'}];
+// sponsors: facts exactly as supplied
+const TIERS={gold:{name:'Gold',label:'Gold sponsor',r:17,c:'#F2B766',size:7.4},silver:{name:'Silver',label:'Silver sponsor',r:28,c:'#DCE3F2',size:6},bronze:{name:'Bronze',label:'Bronze sponsor',r:38,c:'#E0955E',size:5.2},
+ partner:{name:'Partners',label:'Partner',r:47,c:'#9FBDF0',size:4.8},frontier:{name:'Frontier AI showcase',label:'Innovate UK Frontier AI showcase',r:57,c:'#6FD6C8',size:4.2}};
+const FRONT_BIO='An Innovate UK Frontier AI project, exhibiting on Friday.';
+const SPON=[
+ {n:'XTX Markets',t:'gold',l:'xtx-markets-ink.png',b:'A leading algorithmic trading firm and a major funder of maths and AI research and education.',u:'https://www.xtxmarkets.com'},
+ {n:'LifeArc',t:'gold',l:'lifearc-ink.png',b:'A self-funded medical research charity that turns science into treatments and diagnostics for patients.',u:'https://www.lifearc.org'},
+ {n:'Prefrontal',t:'gold',l:'prefrontal-ink.png',b:'Annual Gold sponsor of Thinking About Thinking.'},
+ {n:'AWS',t:'gold',l:'aws-ink.png',b:'Amazon Web Services. Gold sponsor, with the AWS x NVIDIA AI infrastructure panel on Wednesday.',u:'https://aws.amazon.com'},
+ {n:'NVIDIA',t:'gold',l:'nvidia-ink.png',b:'The accelerated computing company. Gold sponsor and host of the cocktail reception before the Speakers and Sponsors Dinner.',u:'https://www.nvidia.com'},
+ {n:'ElevenLabs',t:'silver',l:'elevenlabs-ink.png',b:'An AI audio research and product company, known for its voice models.',u:'https://elevenlabs.io'},
+ {n:'Innovate UK',t:'silver',l:'innovate-uk-ink.png',b:"The UK's innovation agency. On Friday it showcases companies from its Frontier AI programme in Waldo Williams.",u:'https://www.ukri.org/councils/innovate-uk/',waldo:1},
+ {n:'Cooley',t:'silver',l:'cooley-ink.png',b:'An international law firm for technology and life sciences companies and their investors. Co-host of the Speakers and Sponsors Dinner.',u:'https://www.cooley.com'},
+ {n:'Crane',t:'silver',l:'crane-ink.svg',b:'Crane Venture Partners, an early-stage venture firm backing enterprise technology founders. Sponsor of Done Thinking, the closing soirée.',u:'https://crane.vc'},
+ {n:'Basecamp Research',t:'bronze',l:'basecamp-research-ink.png',b:'Builds AI for biology, grounded in data on the diversity of life on Earth.',u:'https://www.basecamp-research.com'},
+ {n:'Gallagher',t:'bronze',l:'gallagher.svg',b:'Arthur J. Gallagher, a global insurance brokerage, risk management and consulting firm.',u:'https://www.ajg.com'},
+ {n:'Nebius',t:'bronze',l:'nebius-ink.png',b:'An AI infrastructure company providing cloud compute for AI builders.',u:'https://nebius.com'},
+ {n:'HSBC Innovation Banking',t:'partner',l:'hsbc.png',b:'Banking for technology and life sciences companies and their investors. Co-host of the Speakers and Sponsors Dinner.',u:'https://www.hsbcinnovationbanking.com'},
+ {n:'Sekkari',t:'partner',l:'sekkari.png',b:'Builds photonic AI inference chips for data centres and AI labs.',u:'https://www.sekkari.ai',word:1},
+ {n:'Mubit',t:'partner',l:'mubit.svg',b:"Turns agents' experience into specialised models that teams own.",u:'https://mubit.ai'},
+ ...[['PolyChord','polychord.png','https://www.polychord.io'],['Intellegens','intellegens.png','https://intellegens.com'],['Mater-AI','mater-ai.png','https://www.mater-ai.com'],['Latom AI','latom.png','https://latom.ai'],['Ergodic','ergodic.png','https://ergodic.ai'],['CBX Technologies','cbx-technologies.png','https://cbxtech.co.uk']]
+   .map(([n,l,u])=>({n,t:'frontier',l,u,b:FRONT_BIO,waldo:1}))];
 const W=(x,y,f=0)=>new THREE.Vector3((x-950)/10,LEVEL[f],(y-490)/10);
 
 // ---------- info panels ----------
-const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let PROG={};
-function face(p){const src=p.p?`assets/speakers/${p.p}`:'';return `<span class="face" data-n="${esc(p.n)}" data-o="${esc(p.o)}" data-p="${src}">${src?`<img src="${src}" alt="">`:'<i></i>'}${esc(p.n.replace(/^(Dr|Prof)\s+/,''))}</span>`}
-function lightHTML(d){const D=DAYS[d],P=PROG[d];let h=`<span class="tag live">Starts ${D.start}</span><span class="tag">Ends ${D.end}</span><p>The main stage, all three days. The speakers you see circling the stage are on today.</p><h3>${D.name}</h3>`;
+const clean=s=>String(s||'').replace(/\s*[\u2013\u2014]\s*/g,', ');
+const esc=s=>clean(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const short=n=>n.replace(/^(Dr|Prof)\s+/,'');
+let PROG={},SPK=[];const SPKBY={};
+function face(p){const src=p.p?`assets/speakers/${p.p}`:'';return `<span class="face" data-n="${esc(p.n)}" data-o="${esc(p.o)}" data-p="${src}">${src?`<img src="${src}" alt="">`:'<i></i>'}${esc(short(p.n))}</span>`}
+function lightHTML(d){const D=DAYS[d],P=PROG[d];let h=`<span class="tag live">Starts ${D.start}</span><span class="tag">Ends ${D.end}</span><p>The main stage, all three days. The speakers you see circling the stage are on today. Click one to fly to them in the speaker galaxy.</p><h3>${D.name}</h3>`;
  if(P)for(const s of P.slots){if(s.k==='break'){h+=`<div class="sess"><div class="t">${esc(s.t.split(' to ')[0])}</div><div><span style="color:#888">${esc(s.title)}</span></div></div>`;continue}
  h+=`<div class="sess"><div class="t">${esc(s.t.split(' to ')[0])}</div><div><b>${esc(s.title)}</b>${s.people.length?`<div class="faces">${s.people.map(face).join('')}</div>`:''}</div></div>`}
  return h+`<div class="who" id="who"></div><a class="btn" href="${SITE}/programme" target="_blank" rel="noopener">Full programme</a>`}
 const closedFri=(t,s)=>({k:'Friday only',t,s,html:`<span class="tag closed">Friday only</span><p>Open on Friday 27 November for the Startup Expo.</p><div class="go"><button data-day="fri">Show Friday</button></div>`});
 const coffee=d=>({k:'Ground floor',t:'Coffee',s:'Side corridors next to The Light',html:`<span class="tag live">${DAYS[d].coffee}</span><p>Tea and coffee for everyone at the morning break, at the coffee stations in the side corridors either side of The Light. From check-in, walk straight through.</p>`});
+const teamChip=m=>`<span class="face" data-team="${m.id}"><img src="${m.img}" alt="">${esc(short(m.n))}</span>`;
+const spChip=(s,i)=>`<span class="face lg" data-gsp="${i}"><img src="assets/logos/${s.l}" alt="">${esc(s.n)}</span>`;
+const spkChip=sp=>`<span class="face" data-gspk="${esc(sp.n)}"><img src="assets/speakers/${sp.p}" alt="">${esc(short(sp.n))}</span>`;
+function sponsorChips(){let h='';for(const k in TIERS){h+=`<h3>${TIERS[k].name==='Frontier AI showcase'?'Innovate UK Frontier AI showcase':TIERS[k].name}</h3><div class="faces">${SPON.map((s,i)=>s.t===k?spChip(s,i):'').join('')}</div>`}return h}
 const INFO={
  light:d=>({k:'Main hall · ground floor',t:'The Light',s:DAYS[d].theme,html:lightHTML(d)}),
- ada:d=>({k:'Ground floor',t:'Ada Salter Suite',s:'The Patron and speaker room',html:`<span class="tag">Patrons and speakers</span><p>Behind the stage. Patrons and speakers have refreshments and lunch here, and speakers wait here before going on.</p><a class="btn" href="${TICKETS}" target="_blank" rel="noopener">See passes</a>`}),
+ ada:d=>({k:'Ground floor',t:'Ada Salter Suite',s:'The Patron and speaker room',html:`<span class="tag">Patrons and speakers</span><p>Behind the stage. Patrons and speakers have refreshments and lunch here, and speakers wait here before going on.</p><p>Anastasia Ilina, speaker liaison, looks after speakers and Patrons here and gets speakers miced up and ready.</p><div class="faces">${teamChip(TEAM.find(m=>m.id==='anastasia'))}</div><a class="btn" href="${TICKETS}" target="_blank" rel="noopener">See passes</a>`}),
  cw:coffee,ce:coffee,
  foyer:d=>({k:'Entrance foyer',t:'Check-in',s:'Your first stop',html:`<span class="tag live">Doors ${DAYS[d].doors}</span><p>Come in through the Euston Road entrance, opposite Euston station.</p><p>Have your <b>Luma ticket QR code</b> ready. Lanyards are laid out in alphabetical order <b>by first name</b>: head to the table with the first letter of your first name, then go through for coffee.</p><p>Speakers: look for the speakers desk.</p>`}),
+ wall:d=>({k:'Entrance foyer',t:'Our sponsors',s:'Thank you to the sponsors and partners of the AE Global Summit',html:`<p>Step into the sponsor galaxy: every sponsor is a world you can visit, with the Gold sponsors closest to the centre.</p><div class="go"><button class="gal" data-gopen="sponsors">✦ Enter the sponsor galaxy</button></div>${sponsorChips()}`}),
  stairs:d=>({k:'Ground floor',t:'Stairs and lift',s:'Up to the first floor',html:`<p>On Friday the first floor is where the Startup Expo and VC office hours are.</p><div class="go"><button data-floor="1">Go up to the first floor</button></div>`}),
  stairs1:d=>({k:'First floor',t:'Stairs and lift',s:'Back down',html:`<div class="go"><button data-floor="0">Go down to the ground floor</button></div>`}),
- waldo:d=>d==='fri'?{k:'Ground floor · Friday',t:'Waldo Williams Suite',s:'The Innovate UK room',html:`<span class="tag live">Open Friday</span><p>Innovate UK's stand with six companies from its Frontier AI programme: PolyChord, Intellegens, Mater-AI, Latom AI, Ergodic and CBX Technologies, joined by LifeArc and Mubit.</p><p>Busiest over lunch, 12:05 to 14:00.</p>`}:{...closedFri('Waldo Williams Suite','The Innovate UK room on Friday'),k:'Ground floor'},
+ waldo:d=>d==='fri'?{k:'Ground floor · Friday',t:'Waldo Williams Suite',s:'The Innovate UK room',html:`<span class="tag live">Open Friday</span><p>Innovate UK's stand with six companies from its Frontier AI programme: PolyChord, Intellegens, Mater-AI, Latom AI, Ergodic and CBX Technologies, joined by LifeArc and Mubit.</p><p>Busiest over lunch, 12:05 to 14:00.</p><div class="go"><button class="gal" data-gopen="sponsors" data-focus="Innovate UK">✦ Visit them in the sponsor galaxy</button></div>`}:{...closedFri('Waldo Williams Suite','The Innovate UK room on Friday'),k:'Ground floor'},
  court:d=>({k:'Ground floor',t:'The Courtyard',s:'Fresh air between sessions',html:`<p>The open courtyard at the heart of Friends House.</p>`}),
  cafe:d=>({k:'Ground floor',t:'Seed Café',s:'The venue café',html:`<p>Friends House's own café. Lunch is not included with general passes, so this is a handy place to grab something.</p>`}),
  shop:d=>({k:'Ground floor',t:'The Quaker Bookshop',s:'Part of Friends House',html:`<p>The bookshop next to the café.</p>`}),
@@ -155,7 +230,21 @@ const INFO={
  marjorie:d=>d==='fri'?{k:'First floor · Friday',t:'Marjorie Sykes',s:'Company booths',html:`<span class="tag live">Open Friday</span><p>Company exhibitors, including Sekkari, over the Startup Expo at lunch.</p>`}:closedFri('Marjorie Sykes','Company booths'),
  vc:d=>d==='fri'?{k:'First floor · Friday',t:'VC office hours',s:'Founders meet investors',html:`<span class="tag live">Open Friday</span><p>Three small rooms where founders meet investors over lunch on Friday.</p>`}:closedFri('VC office hours','Founders meet investors'),
  upper:d=>({k:'First floor',t:'The Light, upper seats',s:'More seats for the main stage',html:`<p>The upper tiers of The Light. Same talks, a view from above.</p><div class="go"><button data-room="light">See today's programme</button></div>`})};
-const teamInfo=t=>({k:'Meet the team',t:t.n,s:t.r,img:t.img,html:t.html+`<h3>The team</h3><div class="faces">${TEAM.map(m=>`<span class="face" data-team="${m.id}"><img src="${m.img}" alt="">${esc(m.n.replace(/^(Dr|Prof)\s+/,''))}</span>`).join('')}</div>`});
+const teamInfo=(t,inG)=>({k:inG?'The team constellation':'Meet the team',t:t.n,s:t.r,img:t.img,html:t.html+`<div class="go">${inG?`<button data-tvenue="${t.id}">Find ${esc(short(t.n).split(' ')[0])} at Friends House</button>`:`<button class="gal" data-gopen="team" data-focus="${t.id}">✦ See the team constellation</button>`}</div><h3>The team</h3><div class="faces">${TEAM.map(teamChip).join('')}</div>`});
+function roleLine(sp){let t=clean(sp.title);if(t&&t===t.toUpperCase())t=t.charAt(0)+t.slice(1).toLowerCase();if(!t)return sp.o;return t.toLowerCase().includes(String(sp.o).toLowerCase())?t:`${t}, ${sp.o}`}
+const SESS={};// d|t|title -> [names]
+function coSpeakers(sp){const out=[];for(const x of sp.s){for(const n of SESS[x.d+'|'+x.t+'|'+x.title]||[])if(n!==sp.n&&!out.includes(n))out.push(n)}return out.map(n=>SPKBY[n]).filter(Boolean)}
+function speakerInfo(sp){const days=[...new Set(sp.s.map(x=>x.d))];const co=coSpeakers(sp);let h='';
+ if(sp.bio)h+=`<p>${esc(sp.bio)}</p>`;
+ h+=`<h3>On stage</h3>`+sp.s.map(x=>`<div class="sess"><div class="t">${DS[x.d]}<br>${esc(x.t.split(' to ')[0])}</div><div><b>${esc(x.title)}</b><small>${DN[x.d]}, ${esc(x.t)}</small>${x.r?`<span class="tag">${esc(x.r)}</span>`:''}</div></div>`).join('');
+ h+=`<div class="go">${days.map(d=>`<button data-light="${d}">See ${DN[d]} in The Light</button>`).join('')}</div>`;
+ if(co.length)h+=`<h3>Sharing the stage</h3><p class="note">The bright lines in the galaxy join people who share a session.</p><div class="faces">${co.map(spkChip).join('')}</div>`;
+ return {k:'Speaker · '+days.map(d=>DN[d]).join(', '),t:sp.n,s:roleLine(sp),img:'assets/speakers/'+sp.p,html:h}}
+function sponsorInfo(s){const T=TIERS[s.t];let h=`<span class="tag" style="background:${T.c}33">${esc(T.label)}</span><p>${esc(s.b)}</p>`;
+ if(s.u)h+=`<a class="btn" href="${s.u}" target="_blank" rel="noopener">Visit ${esc(new URL(s.u).hostname.replace(/^www\./,''))} ↗</a>`;
+ if(s.waldo)h+=`<div class="go"><button data-waldo="1">See Waldo Williams on Friday</button></div>`;
+ h+=`<h3>${s.t==='frontier'?'The Frontier AI showcase':'Also '+T.name.toLowerCase()}</h3><div class="faces">${SPON.map((x,i)=>x.t===s.t&&x!==s?spChip(x,i):'').join('')}</div>`;
+ return {k:T.label,t:s.n,s:'',logo:'assets/logos/'+s.l,html:h}}
 
 // ---------- three ----------
 const host=document.getElementById('gl');
@@ -167,12 +256,16 @@ const loader=new THREE.TextureLoader();
 loader.load('assets/team/cover.jpg',t=>{t.colorSpace=THREE.SRGBColorSpace;scene.background=t});
 scene.add(new THREE.HemisphereLight(0xbfd2ff,0x1a1020,0.9));const sun=new THREE.DirectionalLight(0xffe2b8,1.2);sun.position.set(60,120,40);scene.add(sun);
 // stars
-{const g=new THREE.BufferGeometry(),n=2500,p=new Float32Array(n*3);for(let i=0;i<n;i++){const r=400+Math.random()*600,a=Math.random()*6.28,b=Math.acos(2*Math.random()-1);p[i*3]=r*Math.sin(b)*Math.cos(a);p[i*3+1]=Math.abs(r*Math.cos(b))*0.8-60;p[i*3+2]=r*Math.sin(b)*Math.sin(a)}g.setAttribute('position',new THREE.BufferAttribute(p,3));scene.add(new THREE.Points(g,new THREE.PointsMaterial({color:0xfff1d6,size:1.6,sizeAttenuation:false,transparent:true,opacity:.85})))}
+function starfield(n,r0,r1,half){const g=new THREE.BufferGeometry(),p=new Float32Array(n*3);for(let i=0;i<n;i++){const r=r0+Math.random()*(r1-r0),a=Math.random()*6.28,b=Math.acos(2*Math.random()-1);p[i*3]=r*Math.sin(b)*Math.cos(a);p[i*3+1]=half?Math.abs(r*Math.cos(b))*0.8-60:r*Math.cos(b);p[i*3+2]=r*Math.sin(b)*Math.sin(a)}g.setAttribute('position',new THREE.BufferAttribute(p,3));return new THREE.Points(g,new THREE.PointsMaterial({color:0xfff1d6,size:1.6,sizeAttenuation:false,transparent:true,opacity:.85}))}
+scene.add(starfield(2500,400,1000,1));
 // glow sprite texture
 function glowTex(c='255,205,140'){const cv=document.createElement('canvas');cv.width=cv.height=128;const x=cv.getContext('2d');const g=x.createRadialGradient(64,64,0,64,64,64);g.addColorStop(0,`rgba(${c},1)`);g.addColorStop(.3,`rgba(${c},.5)`);g.addColorStop(1,`rgba(${c},0)`);x.fillStyle=g;x.fillRect(0,0,128,128);const t=new THREE.CanvasTexture(cv);return t}
 const GLOW=glowTex();const STEAM=[];
 function circleTex(url,ring='#F2B766',cb){const img=new Image();const cv=document.createElement('canvas');cv.width=cv.height=256;const t=new THREE.CanvasTexture(cv);t.colorSpace=THREE.SRGBColorSpace;img.onload=()=>{const x=cv.getContext('2d');x.save();x.beginPath();x.arc(128,128,116,0,6.28);x.clip();const s=Math.max(232/img.width,232/img.height),w=img.width*s,h=img.height*s;x.drawImage(img,128-w/2,128-h/2-h*0.08,w,h);x.restore();x.lineWidth=12;x.strokeStyle=ring;x.beginPath();x.arc(128,128,118,0,6.28);x.stroke();t.needsUpdate=true;cb&&cb()};img.src=url;return t}
 function label(html,cls,pos,parent){const d=document.createElement('div');d.className=cls;d.innerHTML=html;const o=new CSS2DObject(d);o.position.copy(pos);(parent||scene).add(o);return o}
+function starGeo(){const sh=new THREE.Shape();for(let i=0;i<16;i++){const a=i*Math.PI/8,r=i%2?.55:1.5;const x=Math.cos(a)*r,y=Math.sin(a)*r;i?sh.lineTo(x,y):sh.moveTo(x,y)}
+ const geo=new THREE.ExtrudeGeometry(sh,{depth:.35,bevelEnabled:true,bevelSize:.12,bevelThickness:.12,bevelSegments:2});geo.center();return geo}
+const STARMAT=new THREE.MeshStandardMaterial({color:0xfff2d6,emissive:0xF2B766,emissiveIntensity:1.1,metalness:.4,roughness:.25});
 
 // floors
 const floors=[new THREE.Group(),new THREE.Group()];floors.forEach((g,i)=>{g.position.y=LEVEL[i];scene.add(g)});
@@ -188,6 +281,8 @@ function buildRooms(list,f){for(const r of list){const w=r.w/10,d=r.h/10,h=r.h3;
  const lab=label(`<b>${esc(r.name)}</b><span>${esc(r.k)}</span>`,'rl'+(r.big?' big':''),new THREE.Vector3(c.x,h+(r.big?3.5:2),c.z),floors[f]);
  ROOMOBJ[r.id]={r,m,edge,mat,lab,f}}}
 buildRooms(FH,0);buildRooms(F1,1);
+// Ada Salter is see-through so you can spot Anastasia inside
+ROOMOBJ.ada.mat.opacity=.42;ROOMOBJ.ada.mat.depthWrite=false;
 // The Light: stage and tiers
 {const L=ROOMOBJ.light;L.mat.opacity=.32;const st=new THREE.Mesh(new THREE.BoxGeometry(20,1.2,4),new THREE.MeshStandardMaterial({color:0x0E1630,emissive:0x1b2a55,emissiveIntensity:.5}));const p=W(1060,243);st.position.set(p.x,0.6,p.z);floors[0].add(st);
  for(let i=0;i<7;i++){const t=new THREE.Mesh(new THREE.TorusGeometry(10+i*3,0.18,6,48,Math.PI*0.8),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.35}));t.rotation.x=Math.PI/2;t.rotation.z=Math.PI*0.1;t.position.set(p.x,0.3+i*0.35,p.z+2);floors[0].add(t)}}
@@ -203,6 +298,33 @@ label('Euston Road entrance ↓','dl',W(1060,860).add(new THREE.Vector3(0,1.5,0)
 // connector beam between floors at the stairs
 {const p=W(1459,305);const beam=new THREE.Mesh(new THREE.CylinderGeometry(.5,.5,LEVEL[1],12,1,true),new THREE.MeshBasicMaterial({color:0xF2B766,transparent:true,opacity:.35}));beam.position.set(p.x,LEVEL[1]/2,p.z);scene.add(beam)}
 
+// ---------- logos (shared by the sponsor wall and the sponsor galaxy) ----------
+const IMG={};
+function loadLogo(file){if(IMG[file])return IMG[file];const url='assets/logos/'+file;
+ IMG[file]=(file.endsWith('.svg')?fetch(url).then(r=>r.text()).then(s=>{const vb=(s.match(/viewBox="([^"]+)"/)||[])[1];if(vb){const [, , w,h]=vb.split(/[\s,]+/).map(Number);const k=1000/w;s=s.replace(/<svg([^>]*)>/,(m,a)=>'<svg'+a.replace(/\s(width|height)="[^"]*"/g,'')+` width="${Math.round(w*k)}" height="${Math.round(h*k)}">`)}return URL.createObjectURL(new Blob([s],{type:'image/svg+xml'}))}):Promise.resolve(url))
+  .then(u=>new Promise(res=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>res(null);i.src=u}));return IMG[file]}
+function fitLogo(x,img,cx,cy,bw,bh){if(!img)return;const s=Math.min(bw/img.width,bh/img.height),w=img.width*s,h=img.height*s;x.drawImage(img,cx-w/2,cy-h/2,w,h)}
+
+// sponsor wall in the Euston Road foyer
+const WALLP=W(1250,782);const wall={};
+{const g=new THREE.Group();g.position.set(WALLP.x,0,WALLP.z);floors[0].add(g);wall.g=g;
+ const cv=document.createElement('canvas');cv.width=512;cv.height=640;const tex=new THREE.CanvasTexture(cv);tex.colorSpace=THREE.SRGBColorSpace;wall.cv=cv;wall.tex=tex;
+ const side=new THREE.MeshStandardMaterial({color:0x0E1630,emissive:0xF2B766,emissiveIntensity:.35,roughness:.4,metalness:.4});
+ const face=new THREE.MeshBasicMaterial({map:tex});
+ const box=new THREE.Mesh(new THREE.BoxGeometry(6.4,8,.7),[side,side,side,side,face,side]);box.position.y=4.6;g.add(box);wall.box=box;
+ const edge=new THREE.LineSegments(new THREE.EdgesGeometry(box.geometry),new THREE.LineBasicMaterial({color:0xF2B766}));edge.position.copy(box.position);g.add(edge);
+ const base=new THREE.Mesh(new THREE.CylinderGeometry(3.6,4,.5,40),new THREE.MeshStandardMaterial({color:0x0E1630,emissive:0xF2B766,emissiveIntensity:.3}));base.position.y=.25;g.add(base);
+ const ring=new THREE.Mesh(new THREE.RingGeometry(4.3,4.6,48),new THREE.MeshBasicMaterial({color:0xF2B766,transparent:true,opacity:.75,side:THREE.DoubleSide}));ring.rotation.x=-Math.PI/2;ring.position.y=.06;g.add(ring);wall.ring=ring;
+ const beam=new THREE.Mesh(new THREE.CylinderGeometry(.18,.6,40,16,1,true),new THREE.MeshBasicMaterial({color:0xF2B766,transparent:true,opacity:.22,blending:THREE.AdditiveBlending,depthWrite:false}));beam.position.y=28;g.add(beam);
+ const gl=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:.55}));gl.scale.set(16,16,1);gl.position.y=4.6;g.add(gl);wall.glow=gl;
+ label('✦ Sponsors<small>Click to enter the galaxy</small>','tl wall',new THREE.Vector3(0,10.2,0),g);
+ const draw=()=>{const x=cv.getContext('2d');x.fillStyle='#0E1630';x.fillRect(0,0,512,640);x.strokeStyle='#F2B766';x.lineWidth=6;x.strokeRect(10,10,492,620);
+  x.fillStyle='#F2B766';x.font='600 17px Inter, sans-serif';x.textAlign='center';x.fillText('AE GLOBAL SUMMIT 2026',256,54);x.fillStyle='#fff';x.font='italic 44px Cardo, serif';x.fillText('Our sponsors',256,102);
+  const list=SPON.filter(s=>s.t!=='frontier');const cols=3,cw=150,ch=64,gx=(512-cols*cw-2*10)/2;
+  Promise.all(list.map(s=>loadLogo(s.l))).then(imgs=>{imgs.forEach((im,i)=>{const c=i%cols,r=Math.floor(i/cols);const px=gx+c*(cw+10),py=128+r*(ch+12);x.fillStyle=list[i].t==='gold'?'#FFF6E3':'#F6F1E6';x.beginPath();x.roundRect(px,py,cw,ch,10);x.fill();if(list[i].t==='gold'){x.strokeStyle='#F2B766';x.lineWidth=3;x.stroke()}fitLogo(x,im,px+cw/2,py+ch/2,cw-26,ch-22)});
+   x.fillStyle='#F2B766';x.font='600 14px Inter, sans-serif';x.fillText('+ the Innovate UK Frontier AI showcase',256,128+5*(ch+12)+18);tex.needsUpdate=true})};
+ (document.fonts?document.fonts.ready:Promise.resolve()).then(draw)}
+
 // team figures
 const TEAMOBJ=[];
 for(const t of TEAM){const g=new THREE.Group();const p=W(t.x,t.y);g.position.set(p.x,0,p.z);floors[t.f].add(g);
@@ -210,15 +332,16 @@ for(const t of TEAM){const g=new THREE.Group();const p=W(t.x,t.y);g.position.set
  const ring=new THREE.Mesh(new THREE.RingGeometry(2.1,2.4,40),new THREE.MeshBasicMaterial({color:0xF2B766,transparent:true,opacity:.7,side:THREE.DoubleSide}));ring.rotation.x=-Math.PI/2;ring.position.y=.05;g.add(ring);
  const spr=new THREE.Sprite(new THREE.SpriteMaterial({map:circleTex(t.img),transparent:true}));spr.scale.set(4.6,4.6,1);spr.position.y=4.2;g.add(spr);
  const gl=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:.5}));gl.scale.set(9,9,1);gl.position.y=4.2;g.add(gl);
- label(`${esc(t.n.replace(/^(Dr|Prof)\s+/,''))}<small>${esc(t.r)}</small>`,'tl',new THREE.Vector3(0,7.4,0),g);
+ label(`${esc(short(t.n))}<small>${esc(t.r)}</small>`,'tl',new THREE.Vector3(0,7.4,0),g);
  TEAMOBJ.push({t,g,spr,ring})}
 
 // speakers orbiting The Light
 let ORB=[];const orbGroup=new THREE.Group();floors[0].add(orbGroup);const ORBC=W(1060,470);
-const TEXCACHE={};
+const TEXCACHE={};const spkTex=p=>TEXCACHE[p]||(TEXCACHE[p]=circleTex('assets/speakers/'+p,'#ffffff'));
 function buildOrb(){orbGroup.clear();ORB=[];const P=PROG[day];if(!P)return;const seen={};for(const s of P.slots)for(const p of s.people){if(seen[p.n]||!p.p)continue;seen[p.n]=1;
- const tex=TEXCACHE[p.p]||(TEXCACHE[p.p]=circleTex('assets/speakers/'+p.p,'#ffffff'));const spr=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true}));spr.scale.set(3,3,1);orbGroup.add(spr);
- ORB.push({spr,a:Math.random()*6.28,r:9+Math.random()*12,h:4+Math.random()*7,sp:(Math.random()<.5?-1:1)*(0.12+Math.random()*0.15),bob:Math.random()*6,off:new THREE.Vector3()})}}
+ const spr=new THREE.Sprite(new THREE.SpriteMaterial({map:spkTex(p.p),transparent:true}));spr.scale.set(3,3,1);orbGroup.add(spr);
+ ORB.push({spr,n:p.n,o:p.o,a:Math.random()*6.28,r:9+Math.random()*12,h:4+Math.random()*7,sp:(Math.random()<.5?-1:1)*(0.12+Math.random()*0.15),bob:Math.random()*6,off:new THREE.Vector3()})}}
+const vHover=label('','tl',new THREE.Vector3());vHover.visible=false;
 
 // sparks
 const SPOBJ=[];for(const s of SPARKS){const g=new THREE.Group();const p=W(s.x,s.y);g.position.set(p.x,2.4,p.z);floors[s.f].add(g);
@@ -228,17 +351,182 @@ document.getElementById('ft').textContent=SPARKS.length;
 
 // player star
 const player=new THREE.Group();scene.add(player);
-{const sh=new THREE.Shape();for(let i=0;i<16;i++){const a=i*Math.PI/8,r=i%2?.55:1.5;const x=Math.cos(a)*r,y=Math.sin(a)*r;i?sh.lineTo(x,y):sh.moveTo(x,y)}
- const geo=new THREE.ExtrudeGeometry(sh,{depth:.35,bevelEnabled:true,bevelSize:.12,bevelThickness:.12,bevelSegments:2});geo.center();
- const star=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:0xfff2d6,emissive:0xF2B766,emissiveIntensity:1.1,metalness:.4,roughness:.25}));star.name='star';player.add(star);
+{const star=new THREE.Mesh(starGeo(),STARMAT);star.name='star';player.add(star);
  const gl=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));gl.scale.set(11,11,1);player.add(gl);
  const pl=new THREE.PointLight(0xffc98a,40,40,2);player.add(pl)}
 // trail
 const TN=80,trailGeo=new THREE.BufferGeometry(),trailPos=new Float32Array(TN*3);trailGeo.setAttribute('position',new THREE.BufferAttribute(trailPos,3));
 const trail=new THREE.Points(trailGeo,new THREE.PointsMaterial({map:GLOW,size:1.6,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,color:0xffc98a}));scene.add(trail);let ti=0;
 // burst particles
-const bursts=[];function burst(pos){const n=60,g=new THREE.BufferGeometry(),p=new Float32Array(n*3),v=[];for(let i=0;i<n;i++){p.set([pos.x,pos.y,pos.z],i*3);v.push(new THREE.Vector3((Math.random()-.5),(Math.random()*.9),(Math.random()-.5)).multiplyScalar(.9))}g.setAttribute('position',new THREE.BufferAttribute(p,3));
- const pts=new THREE.Points(g,new THREE.PointsMaterial({map:GLOW,size:1.4,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,color:0xF2B766}));scene.add(pts);bursts.push({pts,v,l:1})}
+const bursts=[];function burst(pos,sc=scene){const n=60,g=new THREE.BufferGeometry(),p=new Float32Array(n*3),v=[];for(let i=0;i<n;i++){p.set([pos.x,pos.y,pos.z],i*3);v.push(new THREE.Vector3((Math.random()-.5),(Math.random()*.9),(Math.random()-.5)).multiplyScalar(.9))}g.setAttribute('position',new THREE.BufferAttribute(p,3));
+ const pts=new THREE.Points(g,new THREE.PointsMaterial({map:GLOW,size:1.4,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,color:0xF2B766}));sc.add(pts);bursts.push({pts,v,l:1,sc})}
+
+// =====================================================================
+// ---------- the galaxies: speakers, sponsors, team ----------
+// =====================================================================
+const gScene=new THREE.Scene();gScene.background=new THREE.Color(0x03050d);
+const gCam=new THREE.PerspectiveCamera(50,innerWidth/innerHeight,0.5,5000);
+const glabels=new CSS2DRenderer({element:document.getElementById('glabels')});glabels.setSize(innerWidth,innerHeight);
+gScene.add(new THREE.AmbientLight(0xc8d4ff,.7));{const l=new THREE.PointLight(0xffd9a0,900,0,1.5);gScene.add(l)}
+{const s=starfield(3200,1300,2600,0);s.material.size=1.4;s.material.opacity=.75;gScene.add(s)}
+// planetarium dome: a faint celestial graticule
+{const P=[],R=1800,D=Math.PI/180,seg=120;for(let lat=-75;lat<=75;lat+=15){const y=R*Math.sin(lat*D),rr=R*Math.cos(lat*D);for(let i=0;i<seg;i++){const a0=i/seg*6.2832,a1=(i+1)/seg*6.2832;P.push(rr*Math.cos(a0),y,rr*Math.sin(a0),rr*Math.cos(a1),y,rr*Math.sin(a1))}}
+ for(let lon=0;lon<180;lon+=15){const c=Math.cos(lon*D),s=Math.sin(lon*D);for(let i=0;i<seg;i++){const a0=i/seg*6.2832,a1=(i+1)/seg*6.2832;P.push(R*Math.cos(a0)*c,R*Math.sin(a0),R*Math.cos(a0)*s,R*Math.cos(a1)*c,R*Math.sin(a1),R*Math.cos(a1)*s)}}
+ const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(P,3));gScene.add(new THREE.LineSegments(g,new THREE.LineBasicMaterial({color:0x8fa6e0,transparent:true,opacity:.07,depthWrite:false})))}
+// generative particle material: soft twinkling points, one draw call per cloud
+const PMAT=new THREE.ShaderMaterial({uniforms:{uT:{value:0},uPR:{value:renderer.getPixelRatio()}},
+ vertexShader:`attribute vec3 acol;attribute float size;attribute float ph;uniform float uT;uniform float uPR;varying vec3 vC;
+ void main(){vec4 mv=modelViewMatrix*vec4(position,1.0);gl_Position=projectionMatrix*mv;float tw=0.72+0.28*sin(uT*(0.5+ph*1.6)+ph*40.0);vC=acol*tw;gl_PointSize=min(40.0,size*uPR*(260.0/max(1.0,-mv.z)));}`,
+ fragmentShader:`varying vec3 vC;void main(){float d=length(gl_PointCoord-0.5);float a=smoothstep(0.5,0.0,d);a*=a;gl_FragColor=vec4(vC*a,1.0);}`,
+ transparent:true,depthWrite:false,blending:THREE.AdditiveBlending});
+const gs=()=>(Math.random()+Math.random()+Math.random()+Math.random()-2)*1.2;
+function cloud(n,fn){const p=new Float32Array(n*3),c=new Float32Array(n*3),s=new Float32Array(n),h=new Float32Array(n);const o={};
+ for(let i=0;i<n;i++){fn(i,o);p.set([o.x,o.y,o.z],i*3);c.set([o.r,o.g,o.b],i*3);s[i]=o.s;h[i]=Math.random()}
+ const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(p,3));g.setAttribute('acol',new THREE.BufferAttribute(c,3));g.setAttribute('size',new THREE.BufferAttribute(s,1));g.setAttribute('ph',new THREE.BufferAttribute(h,1));return new THREE.Points(g,PMAT)}
+const col=h=>new THREE.Color(h);
+const glowFor={};const tintGlow=hex=>glowFor[hex]||(glowFor[hex]=(()=>{const c=col(hex);return glowTex(`${Math.round(c.r*255)},${Math.round(c.g*255)},${Math.round(c.b*255)}`)})());
+function glowSprite(hex,s,op=.6){const m=new THREE.Sprite(new THREE.SpriteMaterial({map:tintGlow(hex),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:op}));m.scale.set(s,s,1);return m}
+function gLabel(html,cls,pos,parent){const o=label(html,cls,pos,parent);o.visible=false;return o}
+
+const G={};// key -> {group,picks,labels,over(),spin,title}
+let mode='venue',gKey=null,gFocus=null,gHover=null;
+const cam={tgt:new THREE.Vector3(),r:200,theta:0,phi:1,fly:null,follow:null,fov:50,fovFrom:50,fovT:1,auto:.02,offX:0,offY:0};
+const fitR=(R,v=1,m=.8)=>{const t=Math.tan(25*Math.PI/180),aU=Math.max(.4,(innerWidth-(innerWidth>760?400:0))/innerHeight);return Math.max(R/(t*aU),R*v/t)*1.06*(innerWidth<=760?m:1)};
+const ease=k=>k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
+
+// ----- SPEAKERS: a three-armed spiral, one arm per day -----
+const ARMC={wed:'#F2B766',thu:'#F08FA6',fri:'#6FD6C8'},ARMS=['wed','thu','fri'];
+const armAng=(k,r)=>k*2.0944+0.5+r*0.028;
+G.speakers={group:new THREE.Group(),picks:[],labels:[],title:['Galaxy one','The Speakers','Each spiral arm is a day. Lines join people who share a stage.'],
+ over:()=>({r:fitR(158,.62,.66),phi:innerWidth<=760?.6:.92,theta:.35}),auto:.018};
+gScene.add(G.speakers.group);
+{const g=G.speakers.group;
+ for(let k=0;k<3;k++){const ac=col(ARMC[ARMS[k]]);g.add(cloud(5200,(i,o)=>{const u=Math.pow(Math.random(),.75),r=8+u*142,a=armAng(k,r)+gs()*0.13*(1.1-u*.4),rad=r+gs()*3.2*(0.4+u);
+  o.x=Math.cos(a)*rad;o.z=Math.sin(a)*rad;o.y=gs()*(2.2*(1-u)+.5);const w=Math.min(1,u*1.8),b=(.24+Math.random()*.42)*(1.3-u*.5);
+  o.r=(1-w+w*ac.r)*b;o.g=(1-w+w*ac.g)*b;o.b=(1-w+w*ac.b)*b;o.s=Math.random()<.03?5+Math.random()*5:1.6+Math.random()*2.8}))}
+ g.add(cloud(2600,(i,o)=>{const r=Math.random()*160,a=Math.random()*6.283;o.x=Math.cos(a)*r;o.z=Math.sin(a)*r;o.y=gs()*1.5;const b=.08+Math.random()*.1;o.r=b*.6;o.g=b*.75;o.b=b*1.3;o.s=1.5+Math.random()*1.5}));
+ g.add(cloud(2400,(i,o)=>{const r=Math.abs(gs())*8,a=Math.random()*6.283;o.x=Math.cos(a)*r;o.z=Math.sin(a)*r;o.y=gs()*3.2*(1-Math.min(1,r/26));const b=.22+Math.random()*.25;o.r=b;o.g=b*.88;o.b=b*.7;o.s=1.6+Math.random()*2.4}));
+ const core=glowSprite('#FFE7C2',46,.55);g.add(core);
+ G.speakers.labels.push(gLabel('<b>The Light</b><span>Three days on the main stage</span>','gcore',new THREE.Vector3(0,-5,0),g));
+ ARMS.forEach((d,k)=>{const r=158,a=armAng(k,r);G.speakers.labels.push(gLabel(`<b style="color:${ARMC[d]}">${DN[d]} ${DS[d].split(' ')[1]}</b><span style="color:${ARMC[d]}">${esc(DAYS[d].theme)}</span>`,'garm',new THREE.Vector3(Math.cos(a)*r,2,Math.sin(a)*r),g))});
+ G.speakers.lines=new THREE.LineSegments(new THREE.BufferGeometry(),new THREE.LineBasicMaterial({color:0xF2B766,transparent:true,opacity:.22,blending:THREE.AdditiveBlending,depthWrite:false}));g.add(G.speakers.lines);
+ G.speakers.hot=new THREE.LineSegments(new THREE.BufferGeometry(),new THREE.LineBasicMaterial({color:0xFFF0D0,transparent:true,opacity:.95,blending:THREE.AdditiveBlending,depthWrite:false}));g.add(G.speakers.hot)}
+function buildSpeakerGalaxy(){const g=G.speakers.group;
+ for(const sp of SPK){SPKBY[sp.n]=sp;for(const x of sp.s){const k=x.d+'|'+x.t+'|'+x.title;(SESS[k]=SESS[k]||[]).push(sp.n)}}
+ ARMS.forEach((d,k)=>{const list=SPK.filter(s=>s.day===d).sort((a,b)=>{const fa=a.s.find(x=>x.d===d)||a.s[0],fb=b.s.find(x=>x.d===d)||b.s[0];return (fa.t>fb.t)-(fa.t<fb.t)});
+  list.forEach((sp,i)=>{const r=22+i*(120/Math.max(1,list.length-1)),a=armAng(k,r);const pos=new THREE.Vector3(Math.cos(a)*r,3+Math.sin(i*1.9+k)*2.2,Math.sin(a)*r);
+   const grp=new THREE.Group();grp.position.copy(pos);g.add(grp);
+   grp.add(glowSprite(ARMC[d],13,.5));
+   const spr=new THREE.Sprite(new THREE.SpriteMaterial({map:spkTex(sp.p),transparent:true,alphaTest:.4}));spr.scale.set(6,6,1);grp.add(spr);
+   const lab=gLabel(`${esc(short(sp.n))}<small>${esc(sp.o)}</small>`,'gname',new THREE.Vector3(0,-4.2,0),grp);
+   G.speakers.picks.push({obj:spr,grp,base:6,lab,fr:40,kind:'speaker',data:sp,info:()=>speakerInfo(sp),name:sp.n})})});
+ // constellations: chair (first named) joined to everyone sharing that session
+ const P=[];const at=n=>G.speakers.picks.find(p=>p.name===n)?.grp.position;
+ for(const k in SESS){const ns=SESS[k];if(ns.length<2)continue;const a=at(ns[0]);for(let i=1;i<ns.length;i++){const b=at(ns[i]);if(a&&b)P.push(a.x,a.y,a.z,b.x,b.y,b.z)}for(let i=1;i<ns.length-1;i++){const a2=at(ns[i]),b=at(ns[i+1]);if(a2&&b)P.push(a2.x,a2.y,a2.z,b.x,b.y,b.z)}}
+ G.speakers.lines.geometry.setAttribute('position',new THREE.Float32BufferAttribute(P,3));
+ if(mode==='galaxy'&&gKey==='speakers'){showLabels('speakers');const p=pendingFocus&&G.speakers.picks.find(p=>p.name===pendingFocus);pendingFocus=null;if(p)setTimeout(()=>{if(gKey==='speakers')focusPick(p)},600)}}
+function hotLines(sp){const P=[];if(sp){const me=G.speakers.picks.find(p=>p.name===sp.n);for(const c of coSpeakers(sp)){const o=G.speakers.picks.find(p=>p.name===c.n);if(me&&o){const a=me.grp.position,b=o.grp.position;P.push(a.x,a.y,a.z,b.x,b.y,b.z)}}}
+ G.speakers.hot.geometry.dispose();G.speakers.hot.geometry=new THREE.BufferGeometry();G.speakers.hot.geometry.setAttribute('position',new THREE.Float32BufferAttribute(P,3))}
+
+// ----- SPONSORS: an orrery, Gold innermost, the Summit star at the centre -----
+G.sponsors={group:new THREE.Group(),picks:[],labels:[],rings:[],title:['Galaxy two','The Sponsors','Gold at the heart, then Silver, Bronze, Partners and the Frontier AI showcase.'],
+ over:()=>({r:fitR(60,.6),phi:.98,theta:0}),auto:.02};
+gScene.add(G.sponsors.group);
+function badgeTex(s,ring){const cv=document.createElement('canvas');cv.width=cv.height=256;const t=new THREE.CanvasTexture(cv);t.colorSpace=THREE.SRGBColorSpace;const x=cv.getContext('2d');
+ const paint=img=>{x.clearRect(0,0,256,256);x.fillStyle='#FBF8F1';x.beginPath();x.arc(128,128,118,0,6.2832);x.fill();x.lineWidth=11;x.strokeStyle=ring;x.beginPath();x.arc(128,128,121,0,6.2832);x.stroke();
+  x.lineWidth=1.5;x.strokeStyle='rgba(14,22,48,.18)';x.beginPath();x.arc(128,128,104,0,6.2832);x.stroke();
+  if(img){const sq=img.width/img.height<1.4;if(s.word){fitLogo(x,img,128,108,96,96);x.fillStyle='#14161c';x.font='600 26px Inter, sans-serif';x.textAlign='center';x.fillText(s.n,128,186)}else fitLogo(x,img,128,128,sq?150:196,sq?128:104)}
+  t.needsUpdate=true};paint(null);loadLogo(s.l).then(paint);return t}
+{const g=G.sponsors.group;
+ const star=new THREE.Mesh(starGeo(),STARMAT);star.scale.setScalar(2.6);g.add(star);G.sponsors.star=star;
+ g.add(glowSprite('#FFD9A0',34,.75));g.add(glowSprite('#FFFFFF',12,.5));
+ G.sponsors.labels.push(gLabel('<b>AE Global Summit 2026</b><span>Thinking About Thinking</span>','gcore',new THREE.Vector3(0,-6.5,0),g));
+ const tilt={gold:[.05,0],silver:[-.07,.04],bronze:[.09,-.05],partner:[-.04,.08],frontier:[.06,.03]};let ti0=0;
+ for(const k in TIERS){const T=TIERS[k];const ring=new THREE.Group();ring.rotation.set(tilt[k][0],0,tilt[k][1]);g.add(ring);const spin=new THREE.Group();ring.add(spin);
+  const pts=[];for(let i=0;i<=200;i++){const a=i/200*6.2832;pts.push(new THREE.Vector3(Math.cos(a)*T.r,0,Math.sin(a)*T.r))}
+  ring.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:T.c,transparent:true,opacity:.32,depthWrite:false})));
+  const tc=col(T.c);spin.add(cloud(1100,(i,o)=>{const a=Math.random()*6.2832,r=T.r+gs()*1.4;o.x=Math.cos(a)*r;o.z=Math.sin(a)*r;o.y=gs()*.35;const b=.12+Math.random()*.22;o.r=tc.r*b;o.g=tc.g*b;o.b=tc.b*b;o.s=1+Math.random()*1.8}));
+  const tl=new THREE.Vector3(Math.cos(2.2)*T.r,0,Math.sin(2.2)*T.r);G.sponsors.labels.push(gLabel(`<span style="color:${T.c}">${esc(T.name)}</span>`,'gtier',tl,ring));
+  const list=SPON.filter(s=>s.t===k);
+  list.forEach((s,i)=>{const a=ti0+i/list.length*6.2832;const grp=new THREE.Group();grp.position.set(Math.cos(a)*T.r,0,Math.sin(a)*T.r);spin.add(grp);
+   grp.add(glowSprite(T.c,T.size*2.3,.55));
+   const spr=new THREE.Sprite(new THREE.SpriteMaterial({map:badgeTex(s,T.c),transparent:true,alphaTest:.4}));spr.scale.set(T.size,T.size,1);grp.add(spr);
+   if(k==='gold'){const rg=new THREE.Mesh(new THREE.RingGeometry(T.size*.62,T.size*.82,64),new THREE.MeshBasicMaterial({color:0xF2B766,transparent:true,opacity:.55,side:THREE.DoubleSide,depthWrite:false}));rg.rotation.set(1.2,.35,0);grp.add(rg);grp.userData.rg=rg}
+   const lab=gLabel(`${esc(s.n)}<small>${esc(T.name==='Frontier AI showcase'?'Frontier AI':T.name)}</small>`,'gname',new THREE.Vector3(0,-T.size*.62-.6,0),grp);
+   G.sponsors.picks.push({obj:spr,grp,base:T.size,lab,fr:T.size*4.6+12,kind:'sponsor',data:s,info:()=>sponsorInfo(s),name:s.n})});
+  G.sponsors.rings.push({spin,w:.95/Math.pow(T.r,1.05)});ti0+=.7}}
+
+// ----- TEAM: six stars drawn as a hexagram constellation -----
+G.team={group:new THREE.Group(),picks:[],labels:[],title:['Galaxy three','The Team','The six people looking after you at Friends House.'],
+ over:()=>({r:fitR(35,1),phi:1.42,theta:0}),auto:0};
+gScene.add(G.team.group);
+{const g=G.team.group;const R=21;const star=new THREE.Mesh(starGeo(),STARMAT);star.scale.setScalar(1.8);g.add(star);G.team.star=star;g.add(glowSprite('#FFD9A0',26,.6));
+ g.add(cloud(4200,(i,o)=>{const a=Math.random()*6.2832,r=Math.pow(Math.random(),.6)*44;o.x=Math.cos(a)*r;o.y=Math.sin(a)*r*.9;o.z=gs()*5;const w=Math.random();const b=.07+Math.random()*.16;o.r=b*(1+w*.2);o.g=b*(.75+w*.1);o.b=b*(.62+(1-w)*.6);o.s=1.4+Math.random()*2.6}));
+ const pos=TEAM.map((t,i)=>{const a=Math.PI/2+i*Math.PI/3;return new THREE.Vector3(Math.cos(a)*R,Math.sin(a)*R,(i%2?-2:2))});
+ const P=[];for(let i=0;i<6;i++){const a=pos[i],b=pos[(i+2)%6];P.push(a.x,a.y,a.z,b.x,b.y,b.z)}
+ const lg=new THREE.BufferGeometry();lg.setAttribute('position',new THREE.Float32BufferAttribute(P,3));g.add(new THREE.LineSegments(lg,new THREE.LineBasicMaterial({color:0xF2B766,transparent:true,opacity:.4,blending:THREE.AdditiveBlending,depthWrite:false})));
+ const cp=[];for(let i=0;i<=120;i++){const a=i/120*6.2832;cp.push(new THREE.Vector3(Math.cos(a)*R*1.32,Math.sin(a)*R*1.32,0))}g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(cp),new THREE.LineBasicMaterial({color:0x8fa6e0,transparent:true,opacity:.2})));
+ TEAM.forEach((t,i)=>{const grp=new THREE.Group();grp.position.copy(pos[i]);g.add(grp);grp.add(glowSprite('#F2B766',17,.55));
+  const spr=new THREE.Sprite(new THREE.SpriteMaterial({map:circleTex(t.img),transparent:true,alphaTest:.4}));spr.scale.set(8,8,1);grp.add(spr);
+  const lab=gLabel(`${esc(short(t.n))}<small>${esc(t.r)}</small>`,'gname team',new THREE.Vector3(0,-5.4,0),grp);
+  G.team.picks.push({obj:spr,grp,base:8,lab,fr:36,kind:'team',data:t,info:()=>teamInfo(t,1),name:t.id,always:1})});
+ G.team.labels.push(gLabel('<b>Thinking About Thinking</b><span>The Summit team</span>','gcore',new THREE.Vector3(0,-4.5,0),g))}
+
+function overviewInfo(k){if(k==='speakers'){let h=`<p>${SPK.length} speakers across three days. Each spiral arm of the galaxy is a day, ordered from the first session outwards. Click a portrait to fly to it.</p>`;
+  for(const d of ARMS)h+=`<h3 style="display:flex;align-items:center;gap:8px"><i style="width:10px;height:10px;border-radius:50%;background:${ARMC[d]};display:inline-block"></i>${DAYS[d].name}</h3><p class="note">${esc(DAYS[d].theme)}</p><div class="faces">${SPK.filter(s=>s.day===d).map(spkChip).join('')}</div>`;
+  return {k:'Galaxy · AE Global Summit 2026',t:'The speakers',s:'Three days on the main stage',html:h}}
+ if(k==='sponsors')return {k:'Galaxy · AE Global Summit 2026',t:'Sponsors and partners',s:'Thank you to everyone who supports the Summit',html:`<p>Every sponsor is a world in orbit around the Summit star, Gold closest in. Click one to fly to it.</p>${sponsorChips()}`};
+ return {k:'Galaxy · AE Global Summit 2026',t:'The team',s:'Thinking About Thinking',html:`<p>The six people running the Summit, drawn as a constellation. Click a star to meet them.</p><div class="faces">${TEAM.map(teamChip).join('')}</div>`}}
+
+function showLabels(key){for(const k in G){const on=k===key;G[k].group.visible=on;for(const l of G[k].labels)l.visible=on;for(const p of G[k].picks)p.lab.visible=on&&!!p.always}}
+function flyCam(to,dur=1.7){const from={tgt:cam.tgt.clone(),r:cam.r,theta:cam.theta,phi:cam.phi};const end=to.obj?to.obj.getWorldPosition(new THREE.Vector3()):to.tgt;
+ let dth=(to.theta??cam.theta)-cam.theta;dth=Math.atan2(Math.sin(dth),Math.cos(dth));
+ cam.fly={t:0,dur,from,to,dth,arc:Math.min(80,from.tgt.distanceTo(end)*.45)};cam.follow=null}
+function enterGalaxy(key,focus){if(!G[key])return;const first=mode!=='galaxy';
+ if(first){document.getElementById('panel').classList.remove('open');cur=null;for(const k in keys)keys[k]=0;vHover.visible=false}
+ mode='galaxy';gKey=key;gFocus=null;gHover=null;document.body.classList.add('gmode');showLabels(key);hotLines(null);
+ document.querySelectorAll('#gx button').forEach(b=>b.classList.toggle('on',b.dataset.g===key));
+ const ov=G[key].over();cam.tgt.set(0,0,0);cam.r=ov.r*3.4;cam.phi=Math.max(.3,ov.phi-.55);cam.theta=ov.theta-1.4;cam.fovFrom=100;cam.fovT=0;cam.auto=G[key].auto;
+ const w=document.getElementById('warp');w.classList.remove('on');void w.offsetWidth;w.classList.add('on');
+ const tc=document.getElementById('gtitle');const [a,b,c]=G[key].title;tc.querySelector('small').textContent=a;tc.querySelector('b').textContent=b;tc.querySelector('span').textContent=c;tc.classList.remove('on');if(!focus){void tc.offsetWidth;tc.classList.add('on')}
+ const p=focus&&G[key].picks.find(p=>p.name===focus);pendingFocus=(focus&&!p&&key==='speakers'&&!SPK.length)?focus:null;
+ if(p){flyCam({tgt:new THREE.Vector3(),r:ov.r,phi:ov.phi,theta:ov.theta},1.5);setTimeout(()=>{if(gKey===key&&mode==='galaxy')focusPick(p)},1250)}
+ else{flyCam({tgt:new THREE.Vector3(),r:ov.r,phi:ov.phi,theta:ov.theta},2.3);if(innerWidth>760)setTimeout(()=>{if(gKey===key&&mode==='galaxy'&&!gFocus)openG(overviewInfo(key))},900)}
+ if(!seenG[key]){seenG[key]=1;setTimeout(()=>{if(gKey===key&&mode==='galaxy')toast(key==='speakers'?'Kestrel: tap a portrait to fly to that speaker':key==='sponsors'?'Kestrel: tap a world to fly to that sponsor':'Kestrel: tap a star to meet the team',innerWidth<=760?'Drag to turn the sky · pinch to zoom':'Drag to turn the sky · scroll to zoom · Esc to go back')},3500)}}
+const seenG={};let pendingFocus=null;
+function overview(){if(mode!=='galaxy')return;gFocus=null;hotLines(null);const ov=G[gKey].over();flyCam({tgt:new THREE.Vector3(),r:ov.r,phi:ov.phi,theta:cam.theta},1.6);openG(overviewInfo(gKey))}
+function focusPick(p){gFocus=p;const fr=p.fr*(innerWidth<=760?1.25:1);flyCam({obj:p.obj,r:fr,phi:p.kind==='team'?1.45:p.kind==='sponsor'?.78:1.12,theta:cam.theta+(p.kind==='team'?0:.3)},1.8);openG(p.info());if(p.kind==='speaker')hotLines(p.data)}
+function openG(o){curKind='g';cur='g';openInfo(o)}
+function exitGalaxy(){if(mode!=='galaxy')return;mode='venue';gKey=null;gFocus=null;document.body.classList.remove('gmode');showLabels(null);closePanel();lastZone=zoneAt(P.pos);closedZone=lastZone;
+ document.querySelectorAll('#gx button').forEach(b=>b.classList.remove('on'));renderer.domElement.style.cursor='';
+ const w=document.getElementById('warp');w.classList.remove('on');void w.offsetWidth;w.classList.add('on');document.getElementById('gtitle').classList.remove('on')}
+function stepGalaxy(dt,t){const Gk=G[gKey];PMAT.uniforms.uT.value=t;
+ if(gKey==='speakers')Gk.group.rotation.y+=dt*(gFocus?.003:.012);
+ if(gKey==='sponsors'){for(const r of Gk.rings)r.spin.rotation.y+=dt*r.w*(gFocus?.25:1);Gk.star.quaternion.copy(gCam.quaternion);Gk.star.rotateZ(t*.4);for(const p of Gk.picks)if(p.grp.userData.rg)p.grp.userData.rg.rotation.z+=dt*.3}
+ if(gKey==='team'){Gk.star.quaternion.copy(gCam.quaternion);Gk.star.rotateZ(t*.35);Gk.group.rotation.y=Math.sin(t*.15)*.12}
+ // camera flight
+ if(cam.fly){const f=cam.fly;f.t+=dt;const k=Math.min(1,f.t/f.dur),e=ease(k);const end=f.to.obj?f.to.obj.getWorldPosition(new THREE.Vector3()):f.to.tgt;
+  cam.tgt.lerpVectors(f.from.tgt,end,e);cam.r=THREE.MathUtils.lerp(f.from.r,f.to.r,e)+Math.sin(Math.PI*k)*f.arc;cam.theta=f.from.theta+f.dth*e;cam.phi=THREE.MathUtils.lerp(f.from.phi,f.to.phi??f.from.phi,e);
+  if(k>=1){cam.follow=f.to.obj||null;cam.fly=null}}
+ else{if(cam.follow)cam.tgt.lerp(cam.follow.getWorldPosition(new THREE.Vector3()),1-Math.pow(.002,dt));if(!down&&!pinch)cam.theta+=dt*(gFocus?cam.auto*2.2:cam.auto)}
+ if(cam.fovT<1){cam.fovT=Math.min(1,cam.fovT+dt/1.6);gCam.fov=THREE.MathUtils.lerp(cam.fovFrom,50,ease(cam.fovT));gCam.updateProjectionMatrix()}
+ const sp=Math.sin(cam.phi);gCam.position.set(cam.tgt.x+cam.r*sp*Math.sin(cam.theta),cam.tgt.y+cam.r*Math.cos(cam.phi),cam.tgt.z+cam.r*sp*Math.cos(cam.theta));gCam.lookAt(cam.tgt);
+ panelOffset(gCam,dt);
+ comets(dt);
+ // hover / focus scale, and labels for the nearest few only
+ const mob=innerWidth<=760?(gKey==='speakers'?1.7:gKey==='sponsors'?1.3:1):1;
+ const near=[];for(const p of Gk.picks){const want=p.base*mob*(p===gHover?1.28:p===gFocus?1.14:1);const s=p.obj.scale.x+(want-p.obj.scale.x)*(1-Math.pow(.001,dt));p.obj.scale.set(s,s,1);if(!p.always)p.lab.position.y=-(s*.5+1.1);
+  if(!p.always){p.d=gCam.position.distanceTo(p.grp.getWorldPosition(_v));near.push(p)}}
+ near.sort((a,b)=>a.d-b.d);const lim=innerWidth<=760?4:7,maxD=gKey==='speakers'?62:52;near.forEach((p,i)=>{p.lab.visible=p===gHover||p===gFocus||(i<lim&&p.d<maxD)})}
+const _v=new THREE.Vector3();
+// the odd shooting star across the dome
+const COM=[];{for(let i=0;i<2;i++){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(6),3));g.setAttribute('color',new THREE.BufferAttribute(new Float32Array([1,.93,.8,0,0,0]),3));
+ const l=new THREE.Line(g,new THREE.LineBasicMaterial({vertexColors:true,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));l.visible=false;l.frustumCulled=false;gScene.add(l);COM.push({l,t:-2-Math.random()*6,p:new THREE.Vector3(),v:new THREE.Vector3()})}}
+function comets(dt){for(const c of COM){if(!c.l.visible){c.t+=dt;if(c.t>0){const a=Math.random()*6.283,R=420+Math.random()*300;c.p.set(Math.cos(a)*R,120+Math.random()*260,Math.sin(a)*R).add(cam.tgt);c.v.set(-Math.sin(a),-.35,Math.cos(a)).multiplyScalar(260+Math.random()*160);c.life=1.1;c.l.visible=true}continue}
+ c.life-=dt;c.p.addScaledVector(c.v,dt);const a=c.l.geometry.attributes.position;const tail=c.p.clone().addScaledVector(c.v,-.16);a.setXYZ(0,c.p.x,c.p.y,c.p.z);a.setXYZ(1,tail.x,tail.y,tail.z);a.needsUpdate=true;c.l.material.opacity=Math.min(1,c.life*2);if(c.life<=0){c.l.visible=false;c.t=-4-Math.random()*8}}}
+// keep what you are looking at clear of the info panel (right on desktop, bottom sheet on phones)
+const PNL=document.getElementById('panel');const OFF={x:0,y:0};
+function panelOffset(c,dt){const open=PNL.classList.contains('open');const wx=open&&innerWidth>760?200:0,wy=open&&innerWidth<=760?innerHeight*.25:0;const k=1-Math.pow(.02,dt);OFF.x+=(wx-OFF.x)*k;OFF.y+=(wy-OFF.y)*k;c.setViewOffset(innerWidth,innerHeight,OFF.x,OFF.y,innerWidth,innerHeight)}
 
 // ---------- state ----------
 let day='wed',floor=0,cur=null,lastZone=null,closedZone=null,found=0;
@@ -249,40 +537,72 @@ function setDay(d){day=d;document.querySelectorAll('#days button').forEach(b=>b.
  if(cur)reopen()}
 function goFloor(f){floor=f;document.querySelectorAll('#floors button').forEach(b=>b.classList.toggle('on',+b.dataset.f===f));const p=W(1459,330,f);P.pos.set(p.x,LEVEL[f],p.z);P.vel.set(0,0,0);target=null;burst(P.pos.clone().add(new THREE.Vector3(0,2,0)));
  floors[1].visible=f===1;slabs[1].material.opacity=.92;
- for(const k in ROOMOBJ){const o=ROOMOBJ[k];o.lab.visible=o.f===f}TEAMOBJ.forEach(o=>o.g.visible=f===0||true);
+ floors.forEach((g,i)=>g.traverse(o=>{if(o.isCSS2DObject)o.visible=i===f}));
  if(f===1&&day!=='fri')toast('The first floor comes alive on Friday','Switch to Fri 27 to see the expo rooms open');closePanel();lastZone='stairs1'}
 let curKind=null,curRef=null;
 function openInfo(o){document.getElementById('pk').textContent=o.k;document.getElementById('pt').textContent=o.t;document.getElementById('ps').textContent=o.s;const av=document.getElementById('pav');if(o.img){av.src=o.img;av.hidden=false}else av.hidden=true;
+ const lg=document.getElementById('plogo');if(o.logo){lg.querySelector('img').src=o.logo;lg.hidden=false}else lg.hidden=true;
  const pb=document.getElementById('pb');pb.innerHTML=o.html;pb.scrollTop=0;document.getElementById('panel').classList.add('open');wirePanel()}
 function openRoom(id){cur=id;curKind='room';curRef=id;openInfo(INFO[id](day))}
 function openTeam(t){cur='team:'+t.id;curKind='team';curRef=t;openInfo(teamInfo(t))}
 function reopen(){if(curKind==='room')openRoom(curRef);else if(curKind==='team')openTeam(curRef)}
 function closePanel(){document.getElementById('panel').classList.remove('open');closedZone=lastZone;cur=null}
+function toVenue(fn){exitGalaxy();fn&&fn()}
 function wirePanel(){const pb=document.getElementById('pb');
- pb.querySelectorAll('.face[data-n]').forEach(el=>el.onclick=()=>{const w=document.getElementById('who');if(!w)return;w.innerHTML=`${el.dataset.p?`<img src="${el.dataset.p}" alt="">`:''}<div><b>${esc(el.dataset.n)}</b><span>${esc(el.dataset.o)}</span></div>`;w.classList.add('on');w.scrollIntoView({behavior:'smooth',block:'nearest'})});
- pb.querySelectorAll('[data-team]').forEach(el=>el.onclick=()=>flyTo(TEAM.find(m=>m.id===el.dataset.team)));
+ pb.querySelectorAll('.face[data-n]').forEach(el=>el.onclick=()=>{const w=document.getElementById('who');if(!w)return;const has=!!SPKBY[el.dataset.n];w.innerHTML=`${el.dataset.p?`<img src="${el.dataset.p}" alt="">`:''}<div><b>${esc(el.dataset.n)}</b><span>${esc(el.dataset.o)}</span></div>${has?`<div class="go"><button class="gal" data-gopen="speakers" data-focus="${esc(el.dataset.n)}">✦ Fly to them in the speaker galaxy</button></div>`:''}`;w.classList.add('on');wireGo(w);w.scrollIntoView({behavior:'smooth',block:'nearest'})});
+ pb.querySelectorAll('[data-team]').forEach(el=>el.onclick=()=>{const m=TEAM.find(m=>m.id===el.dataset.team);if(mode==='galaxy'){if(gKey!=='team')enterGalaxy('team',m.id);else focusPick(G.team.picks.find(p=>p.name===m.id))}else flyTo(m)});
+ pb.querySelectorAll('[data-gsp]').forEach(el=>el.onclick=()=>{const s=SPON[+el.dataset.gsp];if(mode==='galaxy'&&gKey==='sponsors')focusPick(G.sponsors.picks.find(p=>p.data===s));else enterGalaxy('sponsors',s.n)});
+ pb.querySelectorAll('[data-gspk]').forEach(el=>el.onclick=()=>{const n=el.dataset.gspk;if(mode==='galaxy'&&gKey==='speakers')focusPick(G.speakers.picks.find(p=>p.name===n));else enterGalaxy('speakers',n)});
+ pb.querySelectorAll('[data-light]').forEach(el=>el.onclick=()=>toVenue(()=>{if(floor!==0)goFloor(0);setDay(el.dataset.light);const r=ROOMOBJ.light.r;target=W(r.x+r.w/2,r.y+r.h-40,0);openRoom('light')}));
+ pb.querySelectorAll('[data-waldo]').forEach(el=>el.onclick=()=>toVenue(()=>{if(floor!==0)goFloor(0);setDay('fri');const r=ROOMOBJ.waldo.r;target=W(r.x+r.w/2,r.y+r.h/2,0);openRoom('waldo')}));
+ pb.querySelectorAll('[data-tvenue]').forEach(el=>el.onclick=()=>toVenue(()=>flyTo(TEAM.find(m=>m.id===el.dataset.tvenue))));
+ wireGo(pb);
  pb.querySelectorAll('[data-day]').forEach(el=>el.onclick=()=>setDay(el.dataset.day));
  pb.querySelectorAll('[data-floor]').forEach(el=>el.onclick=()=>goFloor(+el.dataset.floor));
  pb.querySelectorAll('[data-room]').forEach(el=>el.onclick=()=>{if(floor!==0)goFloor(0);const r=ROOMOBJ[el.dataset.room].r;target=W(r.x+r.w/2,r.y+r.h-40,0)})}
+function wireGo(root){root.querySelectorAll('[data-gopen]').forEach(el=>el.onclick=()=>enterGalaxy(el.dataset.gopen,el.dataset.focus))}
 function flyTo(t){if(floor!==t.f)goFloor(t.f);target=W(t.x,t.y+40,t.f)}
 document.getElementById('px').onclick=closePanel;
+document.getElementById('back').onclick=exitGalaxy;
+document.querySelectorAll('#gx button').forEach(b=>b.onclick=()=>{if(mode==='galaxy'&&gKey===b.dataset.g)overview();else enterGalaxy(b.dataset.g)});
 document.querySelectorAll('#days button').forEach(b=>b.onclick=()=>setDay(b.dataset.d));
 document.querySelectorAll('#floors button').forEach(b=>b.onclick=()=>goFloor(+b.dataset.f));
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{const g=b.dataset.go;if(g==='team'){flyTo(TEAM[0]);return}if(floor!==0)goFloor(0);const r=ROOMOBJ[g].r;target=W(r.x+r.w/2,r.y+r.h/2+(g==='light'?150:0),0)});
-let tt;function toast(a,b=''){const el=document.getElementById('toast');el.innerHTML=esc(a)+(b?`<small>${esc(b)}</small>`:'');el.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('on'),4000)}
+let tt;function toast(a,b=''){const el=document.getElementById('toast');el.innerHTML=esc(a)+(b?`<small>${esc(b)}</small>`:'');el.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('on'),4200)}
 
 // input
-addEventListener('keydown',e=>{const k=e.key.toLowerCase();keys[k]=1;if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))e.preventDefault();if(k==='escape')closePanel()});
+addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(k==='escape'){if(mode==='galaxy')exitGalaxy();else closePanel();return}if(mode==='galaxy')return;keys[k]=1;if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))e.preventDefault()});
 addEventListener('keyup',e=>keys[e.key.toLowerCase()]=0);
-const ray=new THREE.Raycaster(),ndc=new THREE.Vector2();let down=null;
-renderer.domElement.addEventListener('pointerdown',e=>{down={x:e.clientX,y:e.clientY,yaw,pitch,moved:false};renderer.domElement.setPointerCapture(e.pointerId)});
-renderer.domElement.addEventListener('pointermove',e=>{if(!down)return;const dx=e.clientX-down.x,dy=e.clientY-down.y;if(Math.hypot(dx,dy)>6)down.moved=true;if(down.moved){yaw=down.yaw-dx*0.006;pitch=Math.max(.25,Math.min(1.25,down.pitch+dy*0.004))}});
-renderer.domElement.addEventListener('pointerup',e=>{if(down&&!down.moved){ndc.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(ndc,camera);
- const hitTeam=ray.intersectObjects(TEAMOBJ.filter(o=>o.g.parent===floors[floor]).map(o=>o.spr));if(hitTeam.length){const o=TEAMOBJ.find(o=>o.spr===hitTeam[0].object);flyTo(o.t);return}
- const plane=new THREE.Plane(new THREE.Vector3(0,1,0),-LEVEL[floor]);const pt=new THREE.Vector3();if(ray.ray.intersectPlane(plane,pt)){target=pt;target.x=Math.max(-66,Math.min(66,target.x));target.z=Math.max(-46,Math.min(45,target.z));burst(pt.clone().add(new THREE.Vector3(0,.5,0)))}}down=null});
-addEventListener('wheel',e=>{dist=Math.max(22,Math.min(90,dist+e.deltaY*0.04))},{passive:true});
+const ray=new THREE.Raycaster(),ndc=new THREE.Vector2();let down=null,pinch=null;const ptrs=new Map();const cv=renderer.domElement;
+function cast(e,cam_,objs){ndc.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(ndc,cam_);return ray.intersectObjects(objs,false)}
+function venuePickables(){const a=[];if(floor===0){for(const o of ORB)a.push(o.spr);a.push(wall.box)}for(const o of TEAMOBJ)if(o.g.parent===floors[floor])a.push(o.spr);return a}
+function hoverAt(e){if(mode==='galaxy'){const h=cast(e,gCam,G[gKey].picks.map(p=>p.obj));gHover=h.length?G[gKey].picks.find(p=>p.obj===h[0].object):null;cv.style.cursor=gHover?'pointer':'grab';return}
+ const h=cast(e,camera,venuePickables());const o=h.length?h[0].object:null;cv.style.cursor=o?'pointer':'';const orb=o&&ORB.find(x=>x.spr===o);
+ if(orb){vHover.element.innerHTML=`${esc(short(orb.n))}<small>Click to fly to them in the speaker galaxy</small>`;vHover.visible=true;vHover.userData.spr=orb.spr}else vHover.visible=false}
+cv.addEventListener('pointerdown',e=>{ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});cv.setPointerCapture(e.pointerId);
+ if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y),r:cam.r,dist};down=null;return}
+ down={x:e.clientX,y:e.clientY,yaw,pitch,theta:cam.theta,phi:cam.phi,moved:false}});
+cv.addEventListener('pointermove',e=>{if(ptrs.has(e.pointerId))ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(pinch&&ptrs.size===2){const [a,b]=[...ptrs.values()];const k=pinch.d/Math.max(20,Math.hypot(a.x-b.x,a.y-b.y));if(mode==='galaxy')cam.r=Math.max(8,Math.min(900,pinch.r*k));else dist=Math.max(22,Math.min(90,pinch.dist*k));return}
+ if(!down){if(e.pointerType==='mouse')hoverAt(e);return}
+ const dx=e.clientX-down.x,dy=e.clientY-down.y;if(Math.hypot(dx,dy)>6)down.moved=true;
+ if(down.moved){if(mode==='galaxy'){if(cam.fly){cam.follow=cam.fly.to.obj||null;cam.fly=null}cam.theta=down.theta-dx*0.005;cam.phi=Math.max(.12,Math.min(1.62,down.phi-dy*0.004));cv.style.cursor='grabbing'}
+  else{yaw=down.yaw-dx*0.006;pitch=Math.max(.25,Math.min(1.25,down.pitch+dy*0.004))}}});
+function endPtr(e,cancel){ptrs.delete(e.pointerId);if(pinch){if(ptrs.size<2)pinch=null;down=null;return}const d=down;down=null;if(cancel||!d||d.moved){if(mode==='galaxy')cv.style.cursor='grab';return}
+ if(mode==='galaxy'){const h=cast(e,gCam,G[gKey].picks.map(p=>p.obj));if(h.length)focusPick(G[gKey].picks.find(p=>p.obj===h[0].object));
+  else{const c=cast(e,gCam,[G[gKey].star||G.speakers.lines].filter(Boolean));if(c.length&&gKey!=='speakers')overview()}return}
+ const hit=cast(e,camera,venuePickables());if(hit.length){const o=hit[0].object;
+  const orb=ORB.find(x=>x.spr===o);if(orb){burst(orb.spr.getWorldPosition(new THREE.Vector3()));enterGalaxy('speakers',orb.n);return}
+  if(o===wall.box){burst(wall.g.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0,5,0)));enterGalaxy('sponsors');return}
+  const tm=TEAMOBJ.find(x=>x.spr===o);if(tm){flyTo(tm.t);return}}
+ ndc.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(ndc,camera);
+ const plane=new THREE.Plane(new THREE.Vector3(0,1,0),-LEVEL[floor]);const pt=new THREE.Vector3();if(ray.ray.intersectPlane(plane,pt)){target=pt;target.x=Math.max(-66,Math.min(66,target.x));target.z=Math.max(-46,Math.min(45,target.z));burst(pt.clone().add(new THREE.Vector3(0,.5,0)))}}
+cv.addEventListener('pointerup',e=>endPtr(e,false));cv.addEventListener('pointercancel',e=>endPtr(e,true));
+cv.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'){gHover=null;vHover.visible=false}});
+cv.addEventListener('wheel',e=>{e.preventDefault();if(mode==='galaxy')cam.r=Math.max(8,Math.min(900,cam.r*(1+Math.max(-.3,Math.min(.3,e.deltaY*0.0012)))));else dist=Math.max(22,Math.min(90,dist+e.deltaY*0.04))},{passive:false});
 
 function zoneAt(p){const x=p.x*10+950,y=p.z*10+490;for(const t of TEAMOBJ){if(t.t.f!==floor)continue;if(Math.hypot(p.x-t.g.position.x,p.z-t.g.position.z)<4)return 'team:'+t.t.id}
+ if(floor===0&&Math.hypot(p.x-WALLP.x,p.z-WALLP.z)<5.5)return 'wall';
  for(const r of(floor?F1:FH))if(x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h)return r.id;return null}
 
 // ---------- loop ----------
@@ -304,26 +624,38 @@ function step(dt,t){
  for(const st of STEAM){st.userData.steam+=dt;const k=(st.userData.steam%2)/2;st.position.y=2.6+k*1.6;st.material.opacity=.4*(1-k)}
  // team bob + face camera ring pulse
  for(const o of TEAMOBJ){o.spr.position.y=4.2+Math.sin(t*1.6+o.t.x)*.25;o.ring.scale.setScalar(1+Math.sin(t*3+o.t.y)*.06)}
+ // sponsor wall pulse
+ wall.ring.scale.setScalar(1+Math.sin(t*2.2)*.08);wall.glow.material.opacity=.45+Math.sin(t*2.2)*.15;
  // orbiting speakers, nudged by the star
  for(const o of ORB){o.a+=o.sp*dt;const base=new THREE.Vector3(ORBC.x+Math.cos(o.a)*o.r,o.h+Math.sin(t+o.bob)*.6,ORBC.z+Math.sin(o.a)*o.r*.8);const wp=base.clone().add(o.off);
   if(floor===0){const d=new THREE.Vector3(wp.x-P.pos.x,0,wp.z-P.pos.z);const L=d.length();if(L<7)o.off.addScaledVector(d.normalize(),(7-L)*dt*3)}o.off.multiplyScalar(Math.pow(0.4,dt));o.spr.position.copy(wp)}
+ if(vHover.visible&&vHover.userData.spr){vHover.userData.spr.getWorldPosition(vHover.position);vHover.position.y+=2.4}
  // sparks
  for(const o of SPOBJ){if(o.s.got)continue;o.m.rotation.y+=dt*1.5;o.g.position.y=2.4+Math.sin(t*2+o.s.x)*.4;
   if(o.s.f===floor&&Math.hypot(o.g.position.x-P.pos.x,o.g.position.z-P.pos.z)<3.2){o.s.got=1;found++;document.getElementById('fc').textContent=found;burst(o.g.getWorldPosition(new THREE.Vector3()));o.g.visible=false;toast(`Discovery ${found} of ${SPARKS.length}`,o.s.tip);if(found===SPARKS.length)setTimeout(()=>toast('You found them all!','See you at Friends House. Doors open at 08:15 on Wednesday.'),4300)}}
- // bursts
- for(let i=bursts.length-1;i>=0;i--){const b=bursts[i];b.l-=dt*1.1;const a=b.pts.geometry.attributes.position;for(let j=0;j<b.v.length;j++){a.array[j*3]+=b.v[j].x;a.array[j*3+1]+=b.v[j].y;a.array[j*3+2]+=b.v[j].z;b.v[j].multiplyScalar(.94)}a.needsUpdate=true;b.pts.material.opacity=Math.max(0,b.l);if(b.l<=0){scene.remove(b.pts);bursts.splice(i,1)}}
  // camera follow
  const fx=P.pos.x*0.5,fz=P.pos.z*0.5;const want=new THREE.Vector3(fx+Math.sin(yaw)*Math.cos(pitch)*dist,P.pos.y+Math.sin(pitch)*dist,fz+Math.cos(yaw)*Math.cos(pitch)*dist);
  camPos.lerp(want,1-Math.pow(0.002,dt));look.lerp(new THREE.Vector3(fx,P.pos.y+2,fz),1-Math.pow(0.001,dt));camera.position.copy(camPos);camera.lookAt(look);
+ panelOffset(camera,dt);
 }
-function loop(){const dt=Math.min(.05,clock.getDelta()),t=clock.elapsedTime;step(dt,t);renderer.render(scene,camera);labels.render(scene,camera);requestAnimationFrame(loop)}
-addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);labels.setSize(innerWidth,innerHeight)});
+function stepBursts(dt){for(let i=bursts.length-1;i>=0;i--){const b=bursts[i];b.l-=dt*1.1;const a=b.pts.geometry.attributes.position;for(let j=0;j<b.v.length;j++){a.array[j*3]+=b.v[j].x;a.array[j*3+1]+=b.v[j].y;a.array[j*3+2]+=b.v[j].z;b.v[j].multiplyScalar(.94)}a.needsUpdate=true;b.pts.material.opacity=Math.max(0,b.l);if(b.l<=0){b.sc.remove(b.pts);b.pts.geometry.dispose();b.pts.material.dispose();bursts.splice(i,1)}}}
+function loop(){const dt=Math.min(.05,clock.getDelta()),t=clock.elapsedTime;stepBursts(dt);
+ if(mode==='galaxy'){stepGalaxy(dt,t);renderer.render(gScene,gCam);glabels.render(gScene,gCam)}
+ else{step(dt,t);renderer.render(scene,camera);labels.render(scene,camera)}
+ requestAnimationFrame(loop)}
+addEventListener('resize',()=>{camera.aspect=gCam.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();gCam.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);labels.setSize(innerWidth,innerHeight);glabels.setSize(innerWidth,innerHeight)});
 camPos.set(P.pos.x+30,60,P.pos.z+60);look.copy(P.pos);
 fetch('assets/programme.json').then(r=>r.json()).then(j=>{PROG=j;setDay('wed')});
-for(const k in ROOMOBJ)ROOMOBJ[k].lab.visible=ROOMOBJ[k].f===0;floors[1].visible=false;
+fetch('assets/speakers.json').then(r=>r.json()).then(j=>{SPK=j.filter(s=>s.p);buildSpeakerGalaxy()});
+for(const k in ROOMOBJ)ROOMOBJ[k].lab.visible=ROOMOBJ[k].f===0;floors[1].visible=false;showLabels(null);
 loop();document.getElementById('load').textContent='';
-document.getElementById('start').onclick=()=>{document.getElementById('intro').remove();toast('Welcome to Friends House','You are at the Euston Road entrance. Celal and Anastasia are here to help. Fly into The Light to meet the speakers.');setTimeout(()=>document.getElementById('hint').style.opacity=0,10000)};
-window.__dbg={P,goFloor,setDay,openRoom,TEAM,flyTo};
+document.getElementById('start').onclick=()=>{document.getElementById('intro').remove();toast('Welcome to Friends House','Kestrel here, your guide. You are at the Euston Road entrance, and Celal is at check-in to help. Fly into The Light to meet the speakers.');setTimeout(()=>document.getElementById('hint').style.opacity=0,10000)};
+window.__dbg={P,goFloor,setDay,openRoom,TEAM,flyTo,enterGalaxy,exitGalaxy,overview,cam,G,get mode(){return mode},
+ focus:n=>{const p=G[gKey].picks.find(p=>p.name===n);p&&focusPick(p)},closePanel,
+ hover:n=>{gHover=G[gKey].picks.find(p=>p.name===n)||null},
+ orb:()=>ORB,wall,camera,gCam,get gKey(){return gKey},scr:(o,c)=>{const v=o.getWorldPosition(new THREE.Vector3()).project(c);return [(v.x+1)/2*innerWidth,(1-v.y)/2*innerHeight]},
+ view:(d,p)=>{dist=d;if(p!=null)pitch=p},snap:()=>{for(let i=0;i<200;i++)step(.05,clock.elapsedTime)},
+ settle:(n=160)=>{for(let i=0;i<n;i++)stepGalaxy(.05,clock.elapsedTime+i*.05)}};
 </script>
 </body>
 </html>
