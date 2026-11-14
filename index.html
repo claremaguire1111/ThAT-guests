@@ -4,150 +4,123 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Explore the AE Global Summit</title>
-<meta name="description" content="A playful map of the AE Global Summit 2026 at Friends House, London: rooms, what is on each day, and who is speaking.">
+<meta name="description" content="Fly through Friends House in 3D: the rooms of the AE Global Summit 2026, what is on each day, the speakers and the team.">
 <link rel="icon" type="image/png" href="icon.png">
-<meta name="theme-color" content="#16203A">
+<meta name="theme-color" content="#0B1022">
 <link href="https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#16203A;--navy2:#24345C;--ink:#14161c;--cream:#F6F1E6;--gold:#F2B766;--accent:#E8894A;--soft:#5b6070;--line:rgba(20,22,28,.12)}
-*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:var(--navy);font:400 15px/1.5 Inter,system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
-#stage{position:fixed;inset:0}
-canvas{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair}
-/* top bar */
-.top{position:fixed;left:16px;right:16px;top:14px;display:flex;align-items:center;gap:12px;pointer-events:none;z-index:5}
+:root{--navy:#0E1630;--navy2:#24345C;--ink:#14161c;--cream:#F6F1E6;--gold:#F2B766;--accent:#E8894A;--soft:#5b6070;--line:rgba(20,22,28,.12)}
+*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:#05070f;font:400 15px/1.5 Inter,system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+#gl{position:fixed;inset:0}#gl canvas{display:block;touch-action:none}
+#labels{position:fixed;inset:0;pointer-events:none}
+.rl{font-family:Cardo,serif;color:#fff;text-align:center;text-shadow:0 2px 12px rgba(0,0,0,.8);white-space:nowrap;transition:opacity .3s}
+.rl b{display:block;font-size:17px;font-weight:700;letter-spacing:.01em}.rl span{display:block;font:600 9.5px Inter;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.rl.big b{font-size:28px;font-style:italic;font-weight:400}.rl.dim{opacity:.35}
+.tl{font:600 12px Inter;color:#fff;text-align:center;white-space:nowrap;background:rgba(10,14,30,.72);border:1px solid rgba(242,183,102,.5);padding:3px 9px;border-radius:999px;backdrop-filter:blur(4px)}
+.tl small{display:block;font-weight:500;font-size:10px;color:var(--gold)}
+.dl{font:600 11px Inter;color:#0E1630;background:var(--gold);padding:3px 8px;border-radius:999px;white-space:nowrap}
+/* UI */
+.top{position:fixed;left:16px;right:16px;top:14px;display:flex;align-items:center;gap:10px;pointer-events:none;z-index:5;flex-wrap:wrap}
 .top>*{pointer-events:auto}
-.brand{display:flex;align-items:center;gap:10px;color:#fff;background:rgba(22,32,58,.78);backdrop-filter:blur(8px);padding:8px 14px 8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12)}
-.brand img{height:22px}.brand b{font-family:Cardo,serif;font-size:17px;font-weight:700}.brand span{font-size:12px;opacity:.7}
-.seg{display:flex;background:rgba(22,32,58,.78);backdrop-filter:blur(8px);border-radius:999px;padding:4px;border:1px solid rgba(255,255,255,.12)}
-.seg button{border:0;background:none;color:#cfd6e8;font:600 13px Inter;padding:7px 13px;border-radius:999px;cursor:pointer}
-.seg button.on{background:var(--gold);color:var(--navy)}
-.sp{flex:1}
-.found{color:#fff;background:rgba(22,32,58,.78);backdrop-filter:blur(8px);border-radius:999px;padding:8px 14px;font-size:13px;border:1px solid rgba(255,255,255,.12)}
-.found b{color:var(--gold)}
-/* panel */
-.panel{position:fixed;right:16px;top:70px;bottom:16px;width:380px;background:var(--cream);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.35);transform:translateX(420px);transition:transform .35s cubic-bezier(.2,.8,.2,1);z-index:6;display:flex;flex-direction:column;overflow:hidden}
+.glass{background:rgba(10,14,30,.6);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.14);border-radius:999px;color:#fff}
+.brand{display:flex;align-items:center;gap:10px;padding:8px 14px 8px 10px}.brand img{height:22px}.brand b{font-family:Cardo,serif;font-size:17px}.brand span{font-size:12px;opacity:.7}
+.seg{display:flex;padding:4px}.seg button{border:0;background:none;color:#cfd6e8;font:600 13px Inter;padding:7px 13px;border-radius:999px;cursor:pointer}.seg button.on{background:var(--gold);color:var(--navy)}
+.sp{flex:1}.found{padding:8px 14px;font-size:13px}.found b{color:var(--gold)}
+.mini{display:flex;gap:6px;padding:5px 8px}.mini button{border:0;background:rgba(255,255,255,.08);color:#fff;font:500 12px Inter;padding:6px 10px;border-radius:999px;cursor:pointer}.mini button:hover{background:rgba(242,183,102,.25)}
+.panel{position:fixed;right:16px;top:74px;bottom:16px;width:380px;background:var(--cream);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.5);transform:translateX(420px);transition:transform .35s cubic-bezier(.2,.8,.2,1);z-index:6;display:flex;flex-direction:column;overflow:hidden}
 .panel.open{transform:none}
-.ph{padding:20px 22px 14px;background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;position:relative}
+.ph{padding:20px 22px 14px;background:linear-gradient(135deg,#0E1630,#2a3c6a);color:#fff;position:relative}
 .ph .k{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:600}
-.ph h2{font-family:Cardo,serif;font-weight:400;font-style:italic;font-size:30px;margin:4px 0 2px;line-height:1.05}
-.ph p{margin:0;opacity:.85;font-size:14px}
-.x{position:absolute;right:12px;top:10px;border:0;background:rgba(255,255,255,.12);color:#fff;width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer}
-.pb{padding:16px 22px 24px;overflow:auto;flex:1}
-.pb h3{font-family:Cardo,serif;font-size:19px;margin:14px 0 6px}
-.pb p{margin:6px 0;color:#30343f}
-.tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.06em;padding:3px 9px;border-radius:999px;background:#ece4d3;color:#6b5320;margin:0 4px 4px 0}
-.tag.live{background:#e3efe3;color:#2d6a3a}.tag.closed{background:#eee;color:#888}
-.sess{display:grid;grid-template-columns:62px 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
-.sess .t{font-size:12px;font-weight:600;color:var(--navy2);font-variant-numeric:tabular-nums;padding-top:2px}
-.sess b{font-family:Cardo,serif;font-size:16px;display:block;line-height:1.25}
+.ph h2{font-family:Cardo,serif;font-weight:400;font-style:italic;font-size:30px;margin:4px 0 2px;line-height:1.05}.ph p{margin:0;opacity:.85;font-size:14px}
+.ph .av[hidden]{display:none}.ph .av{width:84px;height:84px;border-radius:50%;object-fit:cover;object-position:center 25%;border:3px solid var(--gold);margin-bottom:10px;display:block}
+.x{position:absolute;right:12px;top:10px;border:0;background:rgba(255,255,255,.14);color:#fff;width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer}
+.pb{padding:16px 22px 24px;overflow:auto;flex:1}.pb h3{font-family:Cardo,serif;font-size:19px;margin:14px 0 6px}.pb p{margin:6px 0;color:#30343f}
+.tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.06em;padding:3px 9px;border-radius:999px;background:#ece4d3;color:#6b5320;margin:0 4px 4px 0}.tag.live{background:#e3efe3;color:#2d6a3a}.tag.closed{background:#eee;color:#888}
+.sess{display:grid;grid-template-columns:54px 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.sess .t{font-size:12px;font-weight:600;color:var(--navy2);font-variant-numeric:tabular-nums;padding-top:2px}.sess b{font-family:Cardo,serif;font-size:16px;display:block;line-height:1.25}
 .faces{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 .face{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:2px 10px 2px 2px;font-size:12px;cursor:pointer}
 .face img,.face i{width:26px;height:26px;border-radius:50%;object-fit:cover;object-position:center 25%;background:#d9d2c3;display:block}
-.who{display:none;margin-top:8px;background:#fff;border-radius:12px;padding:12px;border:1px solid var(--line)}
-.who.on{display:flex;gap:12px;align-items:center}.who img{width:64px;height:64px;border-radius:50%;object-fit:cover;object-position:center 25%}
-.who b{font-family:Cardo,serif;font-size:18px;display:block}.who span{font-size:13px;color:var(--soft)}
-.go{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.go button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font:500 13px Inter;cursor:pointer}
-.go button:hover{border-color:var(--navy2)}
+.who{display:none;margin-top:8px;background:#fff;border-radius:12px;padding:12px;border:1px solid var(--line)}.who.on{display:flex;gap:12px;align-items:center}
+.who img{width:64px;height:64px;border-radius:50%;object-fit:cover;object-position:center 25%}.who b{font-family:Cardo,serif;font-size:18px;display:block}.who span{font-size:13px;color:var(--soft)}
+.go{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.go button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font:500 13px Inter;cursor:pointer}
 .btn{display:inline-block;background:var(--navy);color:#fff;text-decoration:none;border-radius:999px;padding:10px 16px;font-weight:600;font-size:14px;margin-top:10px}
-/* hint + toast */
-.hint{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);color:#fff;background:rgba(22,32,58,.78);backdrop-filter:blur(8px);border-radius:999px;padding:9px 16px;font-size:13px;z-index:4;border:1px solid rgba(255,255,255,.12);white-space:nowrap}
-.toast{position:fixed;left:50%;top:76px;transform:translate(-50%,-20px);opacity:0;transition:all .4s;background:var(--gold);color:var(--navy);padding:12px 18px;border-radius:14px;font-weight:600;max-width:min(520px,90vw);z-index:7;box-shadow:0 10px 30px rgba(0,0,0,.25);text-align:center}
-.toast.on{opacity:1;transform:translate(-50%,0)}.toast small{display:block;font-weight:500;opacity:.8;font-size:12px}
-/* intro */
-.intro{position:fixed;inset:0;z-index:10;display:grid;place-items:center;background:radial-gradient(1200px 600px at 50% 30%,rgba(36,52,92,.65),rgba(10,14,28,.92));padding:20px}
-.card{max-width:560px;color:#fff;text-align:center}
-.card .k{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:600}
-.card h1{font-family:Cardo,serif;font-weight:400;font-style:italic;font-size:clamp(40px,7vw,64px);line-height:1;margin:10px 0}
-.card p{opacity:.88;font-size:16px;margin:0 auto 10px;max-width:470px}
-.keys{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:16px 0 22px}
-.keys span{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:8px 12px;font-size:13px}
-.start{border:0;background:var(--gold);color:var(--navy);font:700 16px Inter;padding:14px 28px;border-radius:999px;cursor:pointer;box-shadow:0 10px 30px rgba(242,183,102,.35)}
-.start:hover{transform:translateY(-1px)}
-@media (max-width:760px){.panel{left:10px;right:10px;width:auto;top:auto;height:58vh;bottom:10px;transform:translateY(64vh)}.panel.open{transform:none}
-.brand span{display:none}.found{display:none}.top{left:10px;right:10px;top:10px;flex-wrap:wrap}.hint{bottom:10px;font-size:12px}}
+.hint{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);padding:9px 16px;font-size:13px;z-index:4;white-space:nowrap;transition:opacity 1s}
+.toast{position:fixed;left:50%;top:80px;transform:translate(-50%,-20px);opacity:0;transition:all .4s;background:var(--gold);color:var(--navy);padding:12px 18px;border-radius:14px;font-weight:600;max-width:min(520px,90vw);z-index:7;box-shadow:0 10px 30px rgba(0,0,0,.35);text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}.toast small{display:block;font-weight:500;opacity:.85;font-size:12px}
+.intro{position:fixed;inset:0;z-index:10;display:grid;place-items:center;background:url(assets/team/cover.jpg) center/cover;padding:20px}
+.intro:before{content:"";position:absolute;inset:0;background:radial-gradient(900px 500px at 50% 45%,rgba(8,12,26,.35),rgba(5,7,15,.9))}
+.card{position:relative;max-width:580px;color:#fff;text-align:center}
+.card img{height:44px;margin:0 auto 14px;display:block}
+.card .k{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:600}
+.card h1{font-family:Cardo,serif;font-weight:400;font-style:italic;font-size:clamp(42px,7vw,72px);line-height:1;margin:10px 0}
+.card p{opacity:.9;font-size:16px;margin:0 auto 10px;max-width:480px}
+.keys{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:16px 0 22px}.keys span{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:10px;padding:8px 12px;font-size:13px}
+.start{border:0;background:var(--gold);color:var(--navy);font:700 16px Inter;padding:14px 30px;border-radius:999px;cursor:pointer;box-shadow:0 0 40px rgba(242,183,102,.45)}
+.load{font-size:12px;opacity:.7;margin-top:12px}
+@media (max-width:760px){.panel{left:10px;right:10px;width:auto;top:auto;height:58vh;bottom:10px;transform:translateY(64vh)}.panel.open{transform:none}.brand span,.found,.mini{display:none}.top{left:10px;right:10px;top:10px}.hint{font-size:11px;bottom:10px}.rl b{font-size:13px}.rl.big b{font-size:20px}}
 </style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 </head>
 <body>
-<div id="stage"><canvas id="c"></canvas></div>
+<div id="gl"></div><div id="labels"></div>
 <div class="top">
-  <div class="brand"><img src="assets/img/star.png" alt=""><b>AE Global Summit</b><span>Friends House · 25 to 27 Nov</span></div>
-  <div class="seg" id="days"><button data-d="wed" class="on">Wed 25</button><button data-d="thu">Thu 26</button><button data-d="fri">Fri 27</button></div>
-  <div class="seg" id="floors"><button data-f="0" class="on">Ground</button><button data-f="1">First</button></div>
+  <div class="brand glass"><img src="assets/img/star.png" alt=""><b>AE Global Summit</b><span>Friends House · 25 to 27 Nov</span></div>
+  <div class="seg glass" id="days"><button data-d="wed" class="on">Wed 25</button><button data-d="thu">Thu 26</button><button data-d="fri">Fri 27</button></div>
+  <div class="seg glass" id="floors"><button data-f="0" class="on">Ground</button><button data-f="1">First</button></div>
+  <div class="mini glass"><button data-go="light">The Light</button><button data-go="foyer">Check-in</button><button data-go="team">Meet the team</button></div>
   <div class="sp"></div>
-  <div class="found">Discoveries <b id="fc">0</b>/<span id="ft">0</span></div>
+  <div class="found glass">Discoveries <b id="fc">0</b>/<span id="ft">0</span></div>
 </div>
-<aside class="panel" id="panel"><div class="ph"><div class="k" id="pk"></div><h2 id="pt"></h2><p id="ps"></p><button class="x" id="px" aria-label="Close">×</button></div><div class="pb" id="pb"></div></aside>
-<div class="hint" id="hint">Arrow keys or WASD to move · tap or click anywhere to glide there</div>
+<aside class="panel" id="panel"><div class="ph"><img class="av" id="pav" alt="" hidden><div class="k" id="pk"></div><h2 id="pt"></h2><p id="ps"></p><button class="x" id="px" aria-label="Close">×</button></div><div class="pb" id="pb"></div></aside>
+<div class="hint glass" id="hint">WASD or arrows to fly · tap the floor to glide · drag to look around</div>
 <div class="toast" id="toast"></div>
 <div class="intro" id="intro"><div class="card">
+  <img src="assets/img/star.png" alt="">
   <div class="k">AE Global Summit 2026 · Open Problems for AI</div>
   <h1>Explore Friends House</h1>
-  <p>Find your way around the Summit before you arrive. Glide through the venue, step into a room to see what is on, meet the speakers, and collect discoveries along the way.</p>
-  <div class="keys"><span>⌨ Arrow keys or WASD</span><span>👆 Tap or click to glide</span><span>🗓 Switch day</span><span>🪜 Stairs to the first floor</span></div>
-  <button class="start" id="start">Start exploring</button>
+  <p>Fly through the Summit before you arrive. Step into the rooms, meet the speakers circling The Light, find the team at their posts, and collect discoveries on the way.</p>
+  <div class="keys"><span>⌨ WASD or arrows</span><span>👆 Tap to glide</span><span>🖱 Drag to look</span><span>🗓 Switch day</span></div>
+  <button class="start" id="start">Enter the Summit</button><div class="load" id="load">Loading the venue…</div>
 </div></div>
-<script>
+<script type="module">
+import * as THREE from 'three';
+import {CSS2DRenderer,CSS2DObject} from 'three/addons/renderers/CSS2DRenderer.js';
+
 const DAYS={wed:{name:'Wednesday 25 November',theme:'AI Research Breakthroughs and Infrastructure',doors:'08:15',start:'08:40',end:'16:30',coffee:'10:00 to 10:30'},
  thu:{name:'Thursday 26 November',theme:'AI Safety, Enterprise and Society',doors:'08:30',start:'09:00',end:'16:00',coffee:'10:30 to 11:00'},
  fri:{name:'Friday 27 November',theme:'AI Entrepreneurship and Applications',doors:'09:00',start:'09:30',end:'16:30',coffee:'10:30 to 11:00'}};
-const TICKETS='https://luma.com/8uu3vclv', SITE='https://www.algopreneurship.org';
-// World is 1600 x 1000. Schematic, not to scale.
-const FLOORS=[
- {name:'Ground floor',rooms:[
-  {id:'light',name:'The Light',x:820,y:200,w:480,h:500,c:'#8FD3C9',k:'Main hall',big:1},
-  {id:'ada',name:'Ada Salter',x:820,y:80,w:480,h:100,c:'#E9A79A',k:'Behind the stage'},
-  {id:'cw',name:'Coffee',x:752,y:200,w:56,h:500,c:'#F3D9A6',k:'Side corridor',v:1},
-  {id:'ce',name:'Coffee',x:1312,y:200,w:56,h:500,c:'#F3D9A6',k:'Side corridor',v:1},
-  {id:'foyer',name:'Check-in',x:1384,y:420,w:190,h:330,c:'#BFD0EA',k:'Entrance foyer'},
-  {id:'stairs',name:'Stairs and lift',x:1384,y:220,w:150,h:170,c:'#D8D2E8',k:'To the first floor'},
-  {id:'waldo',name:'Waldo Williams',x:330,y:80,w:400,h:170,c:'#CDBB7A',k:'Ground floor'},
-  {id:'court',name:'Courtyard',x:330,y:290,w:390,h:340,c:'#9FD39B',k:'Open air'},
-  {id:'cafe',name:'Seed Café',x:330,y:670,w:190,h:150,c:'#B7E3B3',k:'Venue café'},
-  {id:'shop',name:'Quaker Bookshop',x:540,y:670,w:180,h:150,c:'#A9BFA7',k:'Bookshop'}],
-  doors:[{x:1574,y:712,t:'Euston Road entrance',below:1},{x:330,y:460,t:'Garden entrance',left:1}]},
- {name:'First floor',rooms:[
-  {id:'sarah',name:'Sarah Fell',x:880,y:80,w:420,h:220,c:'#E8B6B6',k:'First floor'},
-  {id:'upper',name:'The Light, upper seats',x:880,y:340,w:420,h:360,c:'#8FD3C9',k:'Balcony seating'},
-  {id:'vc',name:'VC office hours',x:380,y:250,w:400,h:150,c:'#C7B6E0',k:'Three rooms'},
-  {id:'marjorie',name:'Marjorie Sykes',x:420,y:700,w:330,h:170,c:'#EDB98A',k:'First floor'},
-  {id:'stairs1',name:'Stairs and lift',x:1384,y:220,w:150,h:170,c:'#D8D2E8',k:'To the ground floor'}],doors:[]}];
-
-const INFO={
- light:d=>({k:'Main hall · ground floor',t:'The Light',s:DAYS[d].theme,html:lightHTML(d)}),
- ada:d=>({k:'Ground floor',t:'Ada Salter Suite',s:'The Patron and speaker room',html:`<span class="tag">Patrons and speakers</span><p>Behind the stage. Patrons and speakers have refreshments and lunch here, and speakers wait here before going on.</p><p>Patron passes include the Patron room, meals and receptions.</p><a class="btn" href="${TICKETS}" target="_blank" rel="noopener">See passes</a>`}),
- cw:d=>coffee(d), ce:d=>coffee(d),
- foyer:d=>({k:'Entrance foyer',t:'Check-in',s:'Your first stop',html:`<span class="tag live">Doors ${DAYS[d].doors}</span><p>Come in through the Euston Road entrance, opposite Euston station.</p><p>Have your <b>Luma ticket QR code</b> ready. Lanyards are laid out in alphabetical order <b>by first name</b>: head to the table with the first letter of your first name, then go through for coffee.</p><p>Speakers: look for the speakers desk.</p>`}),
- stairs:d=>({k:'Ground floor',t:'Stairs and lift',s:'Up to the first floor',html:`<p>Take the stairs or the lift up. On Friday the first floor is where the Startup Expo and VC office hours are.</p><div class="go"><button onclick="goFloor(1)">Go up to the first floor</button></div>`}),
- stairs1:d=>({k:'First floor',t:'Stairs and lift',s:'Back down',html:`<div class="go"><button onclick="goFloor(0)">Go down to the ground floor</button></div>`}),
- waldo:d=>d==='fri'?{k:'Ground floor · Friday',t:'Waldo Williams Suite',s:'The Innovate UK room',html:`<span class="tag live">Open Friday</span><p>Innovate UK's stand with six companies from its Frontier AI programme: PolyChord, Intellegens, Mater-AI, Latom AI, Ergodic and CBX Technologies, joined by LifeArc and Mubit.</p><p>Busiest over lunch, 12:05 to 14:00, during the Startup Expo.</p>`}:{k:'Ground floor',t:'Waldo Williams Suite',s:'Opens on Friday',html:`<span class="tag closed">Friday only</span><p>On Friday this is the Innovate UK room, with exhibitors from Innovate UK's Frontier AI programme, LifeArc and Mubit. Switch to Friday to see it.</p><div class="go"><button onclick="setDay('fri')">Show Friday</button></div>`},
- court:d=>({k:'Ground floor',t:'The Courtyard',s:'Fresh air between sessions',html:`<p>The open courtyard at the heart of Friends House. A good spot for a quiet conversation between sessions.</p>`}),
- cafe:d=>({k:'Ground floor',t:'Seed Café',s:'The venue café',html:`<p>Friends House's own café. Lunch is not included with general passes, so this is a handy place to grab something.</p>`}),
- shop:d=>({k:'Ground floor',t:'The Quaker Bookshop',s:'Part of Friends House',html:`<p>The bookshop next to the café.</p>`}),
- sarah:d=>d==='fri'?{k:'First floor · Friday',t:'Sarah Fell',s:'The Startup Expo',html:`<span class="tag live">Open Friday</span><p>Meet the six finalists of the AE Global Summit Startup Competition, who pitch on the main stage, plus startups chosen by AWS and NVIDIA.</p><p>Busiest over lunch, 12:05 to 14:00.</p>`}:closedFri('Sarah Fell','The Startup Expo'),
- marjorie:d=>d==='fri'?{k:'First floor · Friday',t:'Marjorie Sykes',s:'Company booths',html:`<span class="tag live">Open Friday</span><p>Company exhibitors, including Sekkari, over the Startup Expo at lunch.</p>`}:closedFri('Marjorie Sykes','Company booths'),
- vc:d=>d==='fri'?{k:'First floor · Friday',t:'VC office hours',s:'Founders meet investors',html:`<span class="tag live">Open Friday</span><p>Three small rooms where founders meet investors over lunch on Friday.</p>`}:closedFri('VC office hours','Founders meet investors'),
- upper:d=>({k:'First floor',t:'The Light, upper seats',s:'More seats for the main stage',html:`<p>The upper tiers of The Light. Same talks, a view from above.</p><div class="go"><button onclick="openRoom('light')">See today's programme</button></div>`})};
-function closedFri(t,s){return{k:'First floor',t,s,html:`<span class="tag closed">Friday only</span><p>Open on Friday 27 November for the Startup Expo.</p><div class="go"><button onclick="setDay('fri')">Show Friday</button></div>`}}
-function coffee(d){return{k:'Ground floor',t:'Coffee',s:'Side corridors next to The Light',html:`<span class="tag live">${DAYS[d].coffee}</span><p>Tea and coffee for everyone at the morning break, in the side corridors either side of The Light.</p>`}}
-
-let PROG={};const IMG={};
-function face(p){const src=p.p?`assets/speakers/${p.p}`:'';return `<span class="face" data-n="${esc(p.n)}" data-o="${esc(p.o)}" data-p="${src}">${src?`<img src="${src}" alt="">`:'<i></i>'}${esc(p.n.replace(/^(Dr|Prof)\s+/,''))}</span>`}
-function esc(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
-function lightHTML(d){const D=DAYS[d],P=PROG[d];let h=`<span class="tag live">Starts ${D.start}</span><span class="tag">Ends ${D.end}</span><p>The main stage, all three days. Talks, panels and fireside chats.</p><h3>${D.name}</h3>`;
- if(!P)return h;for(const s of P.slots){if(s.k==='break'){h+=`<div class="sess"><div class="t">${esc(s.t.split(' to ')[0])}</div><div><span style="color:#888">${esc(s.title)}</span></div></div>`;continue}
- h+=`<div class="sess"><div class="t">${esc(s.t.split(' to ')[0])}</div><div><b>${esc(s.title)}</b>${s.people.length?`<div class="faces">${s.people.map(face).join('')}</div>`:''}</div></div>`}
- return h+`<div class="who" id="who"></div><a class="btn" href="${SITE}/programme" target="_blank" rel="noopener">Full programme</a>`}
-
-// ---------- state ----------
-const cv=document.getElementById('c'),cx=cv.getContext('2d');let W,H,S,OX,OY,DPR;
-let day='wed',floor=0,cur=null;
-const P={x:1480,y:640,vx:0,vy:0,a:0};let target=null;const keys={};
-const trail=[];let t0=performance.now();
+const TICKETS='https://luma.com/8uu3vclv',SITE='https://www.algopreneurship.org';
+const FH=[ // ground floor schematic (2D plan units, x 300..1600, y 50..930)
+ {id:'light',name:'The Light',k:'Main hall',x:820,y:200,w:480,h:500,c:0x6fd6c8,h3:7,big:1},
+ {id:'ada',name:'Ada Salter',k:'Patrons and speakers',x:820,y:80,w:480,h:100,c:0xef9f90,h3:4},
+ {id:'cw',name:'Coffee',k:'Side corridor',x:752,y:200,w:56,h:500,c:0xf6d39a,h3:1.5},
+ {id:'ce',name:'Coffee',k:'Side corridor',x:1312,y:200,w:56,h:500,c:0xf6d39a,h3:1.5},
+ {id:'foyer',name:'Check-in',k:'Entrance foyer',x:1384,y:420,w:190,h:330,c:0x9fbdf0,h3:2.5},
+ {id:'stairs',name:'Stairs and lift',k:'To the first floor',x:1384,y:220,w:150,h:170,c:0xc9b8f5,h3:3},
+ {id:'waldo',name:'Waldo Williams',k:'Innovate UK room',x:330,y:80,w:400,h:170,c:0xd8c06c,h3:3.5},
+ {id:'court',name:'Courtyard',k:'Open air',x:330,y:290,w:390,h:340,c:0x7fd38a,h3:.4},
+ {id:'cafe',name:'Seed Café',k:'Venue café',x:330,y:670,w:190,h:150,c:0xa8e6a3,h3:2.5},
+ {id:'shop',name:'Quaker Bookshop',k:'Bookshop',x:540,y:670,w:180,h:150,c:0x93b393,h3:2.5}];
+const F1=[
+ {id:'sarah',name:'Sarah Fell',k:'Startup Expo',x:880,y:80,w:420,h:220,c:0xf2a6a6,h3:3.5},
+ {id:'upper',name:'The Light, upper seats',k:'Balcony seating',x:880,y:340,w:420,h:360,c:0x6fd6c8,h3:1.2},
+ {id:'vc',name:'VC office hours',k:'Founders meet investors',x:380,y:250,w:400,h:150,c:0xc0a6ef,h3:3},
+ {id:'marjorie',name:'Marjorie Sykes',k:'Company booths',x:420,y:700,w:330,h:170,c:0xf3b178,h3:3},
+ {id:'stairs1',name:'Stairs and lift',k:'To the ground floor',x:1384,y:220,w:150,h:170,c:0xc9b8f5,h3:3}];
+const FRIONLY=['waldo','sarah','marjorie','vc'];
+const LEVEL=[0,22];
+const TEAM=[
+ {id:'clare',n:'Clare Maguire',r:'Co-founder and COO',img:'assets/team/clare.png',x:1060,y:243,f:0,html:'<p>Runs the Summit day to day, from the venue to the volunteers.</p><p>Questions before or during the Summit: <a href="mailto:clare@thinkingaboutthinking.org">clare@thinkingaboutthinking.org</a></p>'},
+ {id:'ruairidh',n:'Dr Ruairidh Battleday',r:'Co-founder and CEO',img:'assets/team/ruairidh.png',x:985,y:243,f:0,html:'<p>Opens the Summit on Wednesday at 08:40 and chairs sessions across the three days.</p>'},
+ {id:'james',n:'Prof James Whittington',r:'Co-founder and CSO',img:'assets/team/james.png',x:1135,y:243,f:0,html:'<p>Gives a keynote on Wednesday at 09:00, then chairs the fireside chat <i>AI that discovers</i> with Pushmeet Kohli.</p>'},
+ {id:'celal',n:'Celal',r:'Head of Volunteers',img:'assets/team/celal.jpg',x:1425,y:500,f:0,html:'<p>Leads the volunteer team and the front desk. Can\'t find your lanyard, or need help on the day? Find Celal at check-in.</p>'},
+ {id:'anastasia',n:'Anastasia Ilina',r:'Speaker liaison',img:'assets/team/anastasia.png',x:1535,y:500,f:0,html:'<p>Looks after speakers and Patrons: the speakers desk, the Patron room in Ada Salter, and getting speakers miced up and ready to go on.</p>'},
+ {id:'gargi',n:'Gargi Bannur',r:'Main room operations',img:'assets/team/gargi.jpg',x:1250,y:330,f:0,html:'<p>Runs The Light: the doors, seating and the roving microphones for audience questions.</p>'}];
 const SPARKS=[
  {f:0,x:1430,y:660,tip:'Lanyards are laid out by first name. Find the table with your first letter.'},
  {f:0,x:780,y:330,tip:'Tea and coffee is in the side corridors at the morning break.'},
- {f:0,x:1060,y:250,tip:'Speakers wait in Ada Salter, just behind the stage.'},
+ {f:0,x:1060,y:150,tip:'Speakers wait in Ada Salter, just behind the stage.'},
  {f:0,x:430,y:345,tip:'The courtyard is the quiet spot for a conversation between sessions.'},
  {f:0,x:470,y:795,tip:'Lunch is not included with general passes: Seed Café is right here.'},
  {f:0,x:1505,y:250,tip:'Take the stairs or lift: the first floor opens up on Friday.'},
@@ -155,105 +128,194 @@ const SPARKS=[
  {f:1,x:580,y:330,tip:'Friday: founders meet investors in the VC office hours rooms.'},
  {f:0,x:660,y:110,tip:'Friday: Innovate UK and its Frontier AI companies take over Waldo Williams.'},
  {f:1,x:1090,y:520,tip:'The upper tiers of The Light have more seats with a view from above.'}];
-let found=0;document.getElementById('ft').textContent=SPARKS.length;
-// speakers orbiting the stage
-let orb=[];
-function buildOrb(){orb=[];const P2=PROG[day];if(!P2)return;const seen={};for(const s of P2.slots)for(const p of s.people){if(seen[p.n]||!p.p)continue;seen[p.n]=1;const im=IMG[p.p]||(IMG[p.p]=Object.assign(new Image(),{src:'assets/speakers/'+p.p}));orb.push({im,n:p.n,ang:Math.random()*6.28,r:110+Math.random()*120,sp:(Math.random()<.5?-1:1)*(0.08+Math.random()*0.08),ox:0,oy:0})}}
+const W=(x,y,f=0)=>new THREE.Vector3((x-950)/10,LEVEL[f],(y-490)/10);
 
-function resize(){DPR=Math.min(2,devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;
- const pad=W<760?10:40,top=W<760?110:70,availW=W-pad*2-(cur&&W>=760?400:0),availH=H-top-(W<760?40:50);S=Math.min(availW/1320,availH/910);OX=pad+(availW-1320*S)/2-292*S;OY=top+(availH-910*S)/2-36*S}
-addEventListener('resize',resize);
-function toW(px,py){return[(px-OX)/S,(py-OY)/S]}
+// ---------- info panels ----------
+const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let PROG={};
+function face(p){const src=p.p?`assets/speakers/${p.p}`:'';return `<span class="face" data-n="${esc(p.n)}" data-o="${esc(p.o)}" data-p="${src}">${src?`<img src="${src}" alt="">`:'<i></i>'}${esc(p.n.replace(/^(Dr|Prof)\s+/,''))}</span>`}
+function lightHTML(d){const D=DAYS[d],P=PROG[d];let h=`<span class="tag live">Starts ${D.start}</span><span class="tag">Ends ${D.end}</span><p>The main stage, all three days. The speakers you see circling the stage are on today.</p><h3>${D.name}</h3>`;
+ if(P)for(const s of P.slots){if(s.k==='break'){h+=`<div class="sess"><div class="t">${esc(s.t.split(' to ')[0])}</div><div><span style="color:#888">${esc(s.title)}</span></div></div>`;continue}
+ h+=`<div class="sess"><div class="t">${esc(s.t.split(' to ')[0])}</div><div><b>${esc(s.title)}</b>${s.people.length?`<div class="faces">${s.people.map(face).join('')}</div>`:''}</div></div>`}
+ return h+`<div class="who" id="who"></div><a class="btn" href="${SITE}/programme" target="_blank" rel="noopener">Full programme</a>`}
+const closedFri=(t,s)=>({k:'Friday only',t,s,html:`<span class="tag closed">Friday only</span><p>Open on Friday 27 November for the Startup Expo.</p><div class="go"><button data-day="fri">Show Friday</button></div>`});
+const coffee=d=>({k:'Ground floor',t:'Coffee',s:'Side corridors next to The Light',html:`<span class="tag live">${DAYS[d].coffee}</span><p>Tea and coffee for everyone at the morning break, in the side corridors either side of The Light.</p>`});
+const INFO={
+ light:d=>({k:'Main hall · ground floor',t:'The Light',s:DAYS[d].theme,html:lightHTML(d)}),
+ ada:d=>({k:'Ground floor',t:'Ada Salter Suite',s:'The Patron and speaker room',html:`<span class="tag">Patrons and speakers</span><p>Behind the stage. Patrons and speakers have refreshments and lunch here, and speakers wait here before going on.</p><a class="btn" href="${TICKETS}" target="_blank" rel="noopener">See passes</a>`}),
+ cw:coffee,ce:coffee,
+ foyer:d=>({k:'Entrance foyer',t:'Check-in',s:'Your first stop',html:`<span class="tag live">Doors ${DAYS[d].doors}</span><p>Come in through the Euston Road entrance, opposite Euston station.</p><p>Have your <b>Luma ticket QR code</b> ready. Lanyards are laid out in alphabetical order <b>by first name</b>: head to the table with the first letter of your first name, then go through for coffee.</p><p>Speakers: look for the speakers desk.</p>`}),
+ stairs:d=>({k:'Ground floor',t:'Stairs and lift',s:'Up to the first floor',html:`<p>On Friday the first floor is where the Startup Expo and VC office hours are.</p><div class="go"><button data-floor="1">Go up to the first floor</button></div>`}),
+ stairs1:d=>({k:'First floor',t:'Stairs and lift',s:'Back down',html:`<div class="go"><button data-floor="0">Go down to the ground floor</button></div>`}),
+ waldo:d=>d==='fri'?{k:'Ground floor · Friday',t:'Waldo Williams Suite',s:'The Innovate UK room',html:`<span class="tag live">Open Friday</span><p>Innovate UK's stand with six companies from its Frontier AI programme: PolyChord, Intellegens, Mater-AI, Latom AI, Ergodic and CBX Technologies, joined by LifeArc and Mubit.</p><p>Busiest over lunch, 12:05 to 14:00.</p>`}:{...closedFri('Waldo Williams Suite','The Innovate UK room on Friday'),k:'Ground floor'},
+ court:d=>({k:'Ground floor',t:'The Courtyard',s:'Fresh air between sessions',html:`<p>The open courtyard at the heart of Friends House.</p>`}),
+ cafe:d=>({k:'Ground floor',t:'Seed Café',s:'The venue café',html:`<p>Friends House's own café. Lunch is not included with general passes, so this is a handy place to grab something.</p>`}),
+ shop:d=>({k:'Ground floor',t:'The Quaker Bookshop',s:'Part of Friends House',html:`<p>The bookshop next to the café.</p>`}),
+ sarah:d=>d==='fri'?{k:'First floor · Friday',t:'Sarah Fell',s:'The Startup Expo',html:`<span class="tag live">Open Friday</span><p>Meet the six finalists of the AE Global Summit Startup Competition, who pitch on the main stage, plus startups chosen by AWS and NVIDIA.</p>`}:closedFri('Sarah Fell','The Startup Expo'),
+ marjorie:d=>d==='fri'?{k:'First floor · Friday',t:'Marjorie Sykes',s:'Company booths',html:`<span class="tag live">Open Friday</span><p>Company exhibitors, including Sekkari, over the Startup Expo at lunch.</p>`}:closedFri('Marjorie Sykes','Company booths'),
+ vc:d=>d==='fri'?{k:'First floor · Friday',t:'VC office hours',s:'Founders meet investors',html:`<span class="tag live">Open Friday</span><p>Three small rooms where founders meet investors over lunch on Friday.</p>`}:closedFri('VC office hours','Founders meet investors'),
+ upper:d=>({k:'First floor',t:'The Light, upper seats',s:'More seats for the main stage',html:`<p>The upper tiers of The Light. Same talks, a view from above.</p><div class="go"><button data-room="light">See today's programme</button></div>`})};
+const teamInfo=t=>({k:'Meet the team',t:t.n,s:t.r,img:t.img,html:t.html+`<h3>The team</h3><div class="faces">${TEAM.map(m=>`<span class="face" data-team="${m.id}"><img src="${m.img}" alt="">${esc(m.n.replace(/^(Dr|Prof)\s+/,''))}</span>`).join('')}</div>`});
 
-function roomAt(x,y){for(const r of FLOORS[floor].rooms)if(x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h)return r;return null}
-function openRoom(id){const f=INFO[id];if(!f)return;const o=f(day);cur=id;document.getElementById('pk').textContent=o.k;document.getElementById('pt').textContent=o.t;document.getElementById('ps').textContent=o.s;document.getElementById('pb').innerHTML=o.html;document.getElementById('panel').classList.add('open');resize();
- document.querySelectorAll('.face').forEach(el=>el.onclick=()=>{const w=document.getElementById('who');w.innerHTML=`${el.dataset.p?`<img src="${el.dataset.p}" alt="">`:''}<div><b>${esc(el.dataset.n)}</b><span>${esc(el.dataset.o)}</span></div>`;w.classList.add('on');w.scrollIntoView({behavior:'smooth',block:'nearest'})})}
-function closePanel(){document.getElementById('panel').classList.remove('open');cur=null;resize()}
-document.getElementById('px').onclick=()=>{closePanel();lastRoom='__closed'};
-window.openRoom=openRoom;
-function setDay(d){day=d;document.querySelectorAll('#days button').forEach(b=>b.classList.toggle('on',b.dataset.d===d));buildOrb();if(cur)openRoom(cur)}
-window.setDay=setDay;
-function goFloor(f){floor=f;document.querySelectorAll('#floors button').forEach(b=>b.classList.toggle('on',+b.dataset.f===f));P.x=1460;P.y=420;P.vx=P.vy=0;target=null;lastRoom=null;burst(P.x,P.y,'#F2B766');if(f===1&&day!=='fri')toast('The first floor comes alive on Friday','Switch to Fri 27 to see the expo rooms open');closePanel()}
-window.goFloor=goFloor;
+// ---------- three ----------
+const host=document.getElementById('gl');
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(2,devicePixelRatio));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;host.appendChild(renderer.domElement);
+const labels=new CSS2DRenderer({element:document.getElementById('labels')});labels.setSize(innerWidth,innerHeight);
+const scene=new THREE.Scene();scene.fog=new THREE.FogExp2(0x0a0e1f,0.0022);
+const camera=new THREE.PerspectiveCamera(50,innerWidth/innerHeight,0.5,2000);
+const loader=new THREE.TextureLoader();
+loader.load('assets/team/cover.jpg',t=>{t.colorSpace=THREE.SRGBColorSpace;scene.background=t});
+scene.add(new THREE.HemisphereLight(0xbfd2ff,0x1a1020,0.9));const sun=new THREE.DirectionalLight(0xffe2b8,1.2);sun.position.set(60,120,40);scene.add(sun);
+// stars
+{const g=new THREE.BufferGeometry(),n=2500,p=new Float32Array(n*3);for(let i=0;i<n;i++){const r=400+Math.random()*600,a=Math.random()*6.28,b=Math.acos(2*Math.random()-1);p[i*3]=r*Math.sin(b)*Math.cos(a);p[i*3+1]=Math.abs(r*Math.cos(b))*0.8-60;p[i*3+2]=r*Math.sin(b)*Math.sin(a)}g.setAttribute('position',new THREE.BufferAttribute(p,3));scene.add(new THREE.Points(g,new THREE.PointsMaterial({color:0xfff1d6,size:1.6,sizeAttenuation:false,transparent:true,opacity:.85})))}
+// glow sprite texture
+function glowTex(c='255,205,140'){const cv=document.createElement('canvas');cv.width=cv.height=128;const x=cv.getContext('2d');const g=x.createRadialGradient(64,64,0,64,64,64);g.addColorStop(0,`rgba(${c},1)`);g.addColorStop(.3,`rgba(${c},.5)`);g.addColorStop(1,`rgba(${c},0)`);x.fillStyle=g;x.fillRect(0,0,128,128);const t=new THREE.CanvasTexture(cv);return t}
+const GLOW=glowTex();
+function circleTex(url,ring='#F2B766',cb){const img=new Image();const cv=document.createElement('canvas');cv.width=cv.height=256;const t=new THREE.CanvasTexture(cv);t.colorSpace=THREE.SRGBColorSpace;img.onload=()=>{const x=cv.getContext('2d');x.save();x.beginPath();x.arc(128,128,116,0,6.28);x.clip();const s=Math.max(232/img.width,232/img.height),w=img.width*s,h=img.height*s;x.drawImage(img,128-w/2,128-h/2-h*0.08,w,h);x.restore();x.lineWidth=12;x.strokeStyle=ring;x.beginPath();x.arc(128,128,118,0,6.28);x.stroke();t.needsUpdate=true;cb&&cb()};img.src=url;return t}
+function label(html,cls,pos,parent){const d=document.createElement('div');d.className=cls;d.innerHTML=html;const o=new CSS2DObject(d);o.position.copy(pos);(parent||scene).add(o);return o}
+
+// floors
+const floors=[new THREE.Group(),new THREE.Group()];floors.forEach((g,i)=>{g.position.y=LEVEL[i];scene.add(g)});
+function slab(group,op){const geo=new THREE.BoxGeometry(136,1.4,94);const m=new THREE.MeshStandardMaterial({color:0x17213f,roughness:.6,metalness:.2,transparent:true,opacity:op,emissive:0x0c1430,emissiveIntensity:.6});const s=new THREE.Mesh(geo,m);s.position.set(0,-0.8,-0.5);group.add(s);
+ const e=new THREE.LineSegments(new THREE.EdgesGeometry(geo),new THREE.LineBasicMaterial({color:0xF2B766,transparent:true,opacity:.6}));e.position.copy(s.position);group.add(e);
+ const grid=new THREE.GridHelper(130,26,0x4a5d94,0x2c3a66);grid.position.y=0.01;grid.material.transparent=true;grid.material.opacity=.55;group.add(grid);return s}
+const slabs=[slab(floors[0],1),slab(floors[1],.82)];
+const ROOMOBJ={};
+function buildRooms(list,f){for(const r of list){const w=r.w/10,d=r.h/10,h=r.h3;const geo=new THREE.BoxGeometry(w,h,d);
+ const mat=new THREE.MeshStandardMaterial({color:r.c,roughness:.45,metalness:.05,transparent:true,opacity:.86,emissive:r.c,emissiveIntensity:.12});
+ const m=new THREE.Mesh(geo,mat);const c=W(r.x+r.w/2,r.y+r.h/2);m.position.set(c.x,h/2,c.z);floors[f].add(m);
+ const edge=new THREE.LineSegments(new THREE.EdgesGeometry(geo),new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:.55}));edge.position.copy(m.position);floors[f].add(edge);
+ const lab=label(`<b>${esc(r.name)}</b><span>${esc(r.k)}</span>`,'rl'+(r.big?' big':''),new THREE.Vector3(c.x,h+(r.big?3.5:2),c.z),floors[f]);
+ ROOMOBJ[r.id]={r,m,edge,mat,lab,f}}}
+buildRooms(FH,0);buildRooms(F1,1);
+// The Light: stage and tiers
+{const L=ROOMOBJ.light;L.mat.opacity=.32;const st=new THREE.Mesh(new THREE.BoxGeometry(20,1.2,4),new THREE.MeshStandardMaterial({color:0x0E1630,emissive:0x1b2a55,emissiveIntensity:.5}));const p=W(1060,243);st.position.set(p.x,0.6,p.z);floors[0].add(st);
+ for(let i=0;i<7;i++){const t=new THREE.Mesh(new THREE.TorusGeometry(10+i*3,0.18,6,48,Math.PI*0.8),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.35}));t.rotation.x=Math.PI/2;t.rotation.z=Math.PI*0.1;t.position.set(p.x,0.3+i*0.35,p.z+2);floors[0].add(t)}}
+// doors
+label('Euston Road entrance','dl',W(1600,712).add(new THREE.Vector3(0,1.5,0)),floors[0]);label('Garden entrance','dl',W(300,460).add(new THREE.Vector3(0,1.5,0)),floors[0]);
+// connector beam between floors at the stairs
+{const p=W(1459,305);const beam=new THREE.Mesh(new THREE.CylinderGeometry(.5,.5,LEVEL[1],12,1,true),new THREE.MeshBasicMaterial({color:0xF2B766,transparent:true,opacity:.35}));beam.position.set(p.x,LEVEL[1]/2,p.z);scene.add(beam)}
+
+// team figures
+const TEAMOBJ=[];
+for(const t of TEAM){const g=new THREE.Group();const p=W(t.x,t.y);g.position.set(p.x,0,p.z);floors[t.f].add(g);
+ const ped=new THREE.Mesh(new THREE.CylinderGeometry(1.6,1.9,.6,32),new THREE.MeshStandardMaterial({color:0x0E1630,emissive:0xF2B766,emissiveIntensity:.25}));ped.position.y=.3;g.add(ped);
+ const ring=new THREE.Mesh(new THREE.RingGeometry(2.1,2.4,40),new THREE.MeshBasicMaterial({color:0xF2B766,transparent:true,opacity:.7,side:THREE.DoubleSide}));ring.rotation.x=-Math.PI/2;ring.position.y=.05;g.add(ring);
+ const spr=new THREE.Sprite(new THREE.SpriteMaterial({map:circleTex(t.img),transparent:true}));spr.scale.set(4.6,4.6,1);spr.position.y=4.2;g.add(spr);
+ const gl=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:.5}));gl.scale.set(9,9,1);gl.position.y=4.2;g.add(gl);
+ label(`${esc(t.n.replace(/^(Dr|Prof)\s+/,''))}<small>${esc(t.r)}</small>`,'tl',new THREE.Vector3(0,7.4,0),g);
+ TEAMOBJ.push({t,g,spr,ring})}
+
+// speakers orbiting The Light
+let ORB=[];const orbGroup=new THREE.Group();floors[0].add(orbGroup);const ORBC=W(1060,470);
+const TEXCACHE={};
+function buildOrb(){orbGroup.clear();ORB=[];const P=PROG[day];if(!P)return;const seen={};for(const s of P.slots)for(const p of s.people){if(seen[p.n]||!p.p)continue;seen[p.n]=1;
+ const tex=TEXCACHE[p.p]||(TEXCACHE[p.p]=circleTex('assets/speakers/'+p.p,'#ffffff'));const spr=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true}));spr.scale.set(3,3,1);orbGroup.add(spr);
+ ORB.push({spr,a:Math.random()*6.28,r:9+Math.random()*12,h:4+Math.random()*7,sp:(Math.random()<.5?-1:1)*(0.12+Math.random()*0.15),bob:Math.random()*6,off:new THREE.Vector3()})}}
+
+// sparks
+const SPOBJ=[];for(const s of SPARKS){const g=new THREE.Group();const p=W(s.x,s.y);g.position.set(p.x,2.4,p.z);floors[s.f].add(g);
+ const m=new THREE.Mesh(new THREE.OctahedronGeometry(1,0),new THREE.MeshStandardMaterial({color:0xE8894A,emissive:0xF2B766,emissiveIntensity:1.2,metalness:.3,roughness:.3}));g.add(m);
+ const gl=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));gl.scale.set(6,6,1);g.add(gl);SPOBJ.push({s,g,m})}
+document.getElementById('ft').textContent=SPARKS.length;
+
+// player star
+const player=new THREE.Group();scene.add(player);
+{const sh=new THREE.Shape();for(let i=0;i<16;i++){const a=i*Math.PI/8,r=i%2?.55:1.5;const x=Math.cos(a)*r,y=Math.sin(a)*r;i?sh.lineTo(x,y):sh.moveTo(x,y)}
+ const geo=new THREE.ExtrudeGeometry(sh,{depth:.35,bevelEnabled:true,bevelSize:.12,bevelThickness:.12,bevelSegments:2});geo.center();
+ const star=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:0xfff2d6,emissive:0xF2B766,emissiveIntensity:1.1,metalness:.4,roughness:.25}));star.name='star';player.add(star);
+ const gl=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));gl.scale.set(11,11,1);player.add(gl);
+ const pl=new THREE.PointLight(0xffc98a,40,40,2);player.add(pl)}
+// trail
+const TN=80,trailGeo=new THREE.BufferGeometry(),trailPos=new Float32Array(TN*3);trailGeo.setAttribute('position',new THREE.BufferAttribute(trailPos,3));
+const trail=new THREE.Points(trailGeo,new THREE.PointsMaterial({map:GLOW,size:1.6,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,color:0xffc98a}));scene.add(trail);let ti=0;
+// burst particles
+const bursts=[];function burst(pos){const n=60,g=new THREE.BufferGeometry(),p=new Float32Array(n*3),v=[];for(let i=0;i<n;i++){p.set([pos.x,pos.y,pos.z],i*3);v.push(new THREE.Vector3((Math.random()-.5),(Math.random()*.9),(Math.random()-.5)).multiplyScalar(.9))}g.setAttribute('position',new THREE.BufferAttribute(p,3));
+ const pts=new THREE.Points(g,new THREE.PointsMaterial({map:GLOW,size:1.4,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,color:0xF2B766}));scene.add(pts);bursts.push({pts,v,l:1})}
+
+// ---------- state ----------
+let day='wed',floor=0,cur=null,lastZone=null,closedZone=null,found=0;
+const P={pos:W(1480,690),vel:new THREE.Vector3()};let target=null;const keys={};
+let yaw=0.08,pitch=0.9,dist=90;
+function setDay(d){day=d;document.querySelectorAll('#days button').forEach(b=>b.classList.toggle('on',b.dataset.d===d));buildOrb();
+ for(const id of FRIONLY){const o=ROOMOBJ[id];const on=d==='fri';o.mat.opacity=on?.86:.25;o.mat.emissiveIntensity=on?.35:.02;o.edge.material.opacity=on?.8:.2;o.lab.element.classList.toggle('dim',!on)}
+ if(cur)reopen()}
+function goFloor(f){floor=f;document.querySelectorAll('#floors button').forEach(b=>b.classList.toggle('on',+b.dataset.f===f));const p=W(1459,330,f);P.pos.set(p.x,LEVEL[f],p.z);P.vel.set(0,0,0);target=null;burst(P.pos.clone().add(new THREE.Vector3(0,2,0)));
+ floors[1].visible=f===1;slabs[1].material.opacity=.92;
+ for(const k in ROOMOBJ){const o=ROOMOBJ[k];o.lab.visible=o.f===f}TEAMOBJ.forEach(o=>o.g.visible=f===0||true);
+ if(f===1&&day!=='fri')toast('The first floor comes alive on Friday','Switch to Fri 27 to see the expo rooms open');closePanel();lastZone='stairs1'}
+let curKind=null,curRef=null;
+function openInfo(o){document.getElementById('pk').textContent=o.k;document.getElementById('pt').textContent=o.t;document.getElementById('ps').textContent=o.s;const av=document.getElementById('pav');if(o.img){av.src=o.img;av.hidden=false}else av.hidden=true;
+ const pb=document.getElementById('pb');pb.innerHTML=o.html;pb.scrollTop=0;document.getElementById('panel').classList.add('open');wirePanel()}
+function openRoom(id){cur=id;curKind='room';curRef=id;openInfo(INFO[id](day))}
+function openTeam(t){cur='team:'+t.id;curKind='team';curRef=t;openInfo(teamInfo(t))}
+function reopen(){if(curKind==='room')openRoom(curRef);else if(curKind==='team')openTeam(curRef)}
+function closePanel(){document.getElementById('panel').classList.remove('open');closedZone=lastZone;cur=null}
+function wirePanel(){const pb=document.getElementById('pb');
+ pb.querySelectorAll('.face[data-n]').forEach(el=>el.onclick=()=>{const w=document.getElementById('who');if(!w)return;w.innerHTML=`${el.dataset.p?`<img src="${el.dataset.p}" alt="">`:''}<div><b>${esc(el.dataset.n)}</b><span>${esc(el.dataset.o)}</span></div>`;w.classList.add('on');w.scrollIntoView({behavior:'smooth',block:'nearest'})});
+ pb.querySelectorAll('[data-team]').forEach(el=>el.onclick=()=>flyTo(TEAM.find(m=>m.id===el.dataset.team)));
+ pb.querySelectorAll('[data-day]').forEach(el=>el.onclick=()=>setDay(el.dataset.day));
+ pb.querySelectorAll('[data-floor]').forEach(el=>el.onclick=()=>goFloor(+el.dataset.floor));
+ pb.querySelectorAll('[data-room]').forEach(el=>el.onclick=()=>{if(floor!==0)goFloor(0);const r=ROOMOBJ[el.dataset.room].r;target=W(r.x+r.w/2,r.y+r.h-40,0)})}
+function flyTo(t){if(floor!==t.f)goFloor(t.f);target=W(t.x,t.y+40,t.f)}
+document.getElementById('px').onclick=closePanel;
 document.querySelectorAll('#days button').forEach(b=>b.onclick=()=>setDay(b.dataset.d));
 document.querySelectorAll('#floors button').forEach(b=>b.onclick=()=>goFloor(+b.dataset.f));
-
-let tt;function toast(a,b=''){const el=document.getElementById('toast');el.innerHTML=esc(a)+(b?`<small>${esc(b)}</small>`:'');el.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('on'),3800)}
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{const g=b.dataset.go;if(g==='team'){flyTo(TEAM[0]);return}if(floor!==0)goFloor(0);const r=ROOMOBJ[g].r;target=W(r.x+r.w/2,r.y+r.h/2+(g==='light'?150:0),0)});
+let tt;function toast(a,b=''){const el=document.getElementById('toast');el.innerHTML=esc(a)+(b?`<small>${esc(b)}</small>`:'');el.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('on'),4000)}
 
 // input
-addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=1;if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(e.key.toLowerCase()))e.preventDefault();if(e.key==='Escape')closePanel()});
+addEventListener('keydown',e=>{const k=e.key.toLowerCase();keys[k]=1;if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))e.preventDefault();if(k==='escape')closePanel()});
 addEventListener('keyup',e=>keys[e.key.toLowerCase()]=0);
-cv.addEventListener('pointerdown',e=>{const[x,y]=toW(e.clientX,e.clientY);if(x<0||y<0||x>1600||y>1000)return;target={x,y};ripple(x,y)});
+const ray=new THREE.Raycaster(),ndc=new THREE.Vector2();let down=null;
+renderer.domElement.addEventListener('pointerdown',e=>{down={x:e.clientX,y:e.clientY,yaw,pitch,moved:false};renderer.domElement.setPointerCapture(e.pointerId)});
+renderer.domElement.addEventListener('pointermove',e=>{if(!down)return;const dx=e.clientX-down.x,dy=e.clientY-down.y;if(Math.hypot(dx,dy)>6)down.moved=true;if(down.moved){yaw=down.yaw-dx*0.006;pitch=Math.max(.25,Math.min(1.25,down.pitch+dy*0.004))}});
+renderer.domElement.addEventListener('pointerup',e=>{if(down&&!down.moved){ndc.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(ndc,camera);
+ const hitTeam=ray.intersectObjects(TEAMOBJ.filter(o=>o.g.parent===floors[floor]).map(o=>o.spr));if(hitTeam.length){const o=TEAMOBJ.find(o=>o.spr===hitTeam[0].object);flyTo(o.t);return}
+ const plane=new THREE.Plane(new THREE.Vector3(0,1,0),-LEVEL[floor]);const pt=new THREE.Vector3();if(ray.ray.intersectPlane(plane,pt)){target=pt;target.x=Math.max(-66,Math.min(66,target.x));target.z=Math.max(-46,Math.min(45,target.z));burst(pt.clone().add(new THREE.Vector3(0,.5,0)))}}down=null});
+addEventListener('wheel',e=>{dist=Math.max(22,Math.min(90,dist+e.deltaY*0.04))},{passive:true});
 
-// particles
-const parts=[];function burst(x,y,c){for(let i=0;i<26;i++){const a=Math.random()*6.28,s=1+Math.random()*4;parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,l:1,c})}}
-const rips=[];function ripple(x,y){rips.push({x,y,r:4,l:1})}
+function zoneAt(p){const x=p.x*10+950,y=p.z*10+490;for(const t of TEAMOBJ){if(t.t.f!==floor)continue;if(Math.hypot(p.x-t.g.position.x,p.z-t.g.position.z)<4)return 'team:'+t.t.id}
+ for(const r of(floor?F1:FH))if(x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h)return r.id;return null}
 
-let lastRoom=null;
-function step(dt){
- // movement with easing and damping
- let ax=0,ay=0;const k=keys;if(k.arrowleft||k.a)ax-=1;if(k.arrowright||k.d)ax+=1;if(k.arrowup||k.w)ay-=1;if(k.arrowdown||k.s)ay+=1;
- if(ax||ay){target=null;const m=Math.hypot(ax,ay);P.vx+=ax/m*0.9*dt;P.vy+=ay/m*0.9*dt}
- else if(target){const dx=target.x-P.x,dy=target.y-P.y,d=Math.hypot(dx,dy);if(d<6)target=null;else{const f=Math.min(1,d/160);P.vx+=dx/d*0.85*f*dt;P.vy+=dy/d*0.85*f*dt}}
- P.vx*=Math.pow(0.9,dt);P.vy*=Math.pow(0.9,dt);P.x+=P.vx*dt;P.y+=P.vy*dt;
- P.x=Math.max(20,Math.min(1580,P.x));P.y=Math.max(20,Math.min(980,P.y));P.a+=0.02*dt+Math.hypot(P.vx,P.vy)*0.01*dt;
- if(Math.hypot(P.vx,P.vy)>0.6&&Math.random()<0.6)trail.push({x:P.x,y:P.y,l:1});
- // rooms
- const r=roomAt(P.x,P.y);const id=r?r.id:null;
- if(id!==lastRoom&&lastRoom!=='__closed'){lastRoom=id;if(id){if(id==='stairs'||id==='stairs1'){openRoom(id)}else openRoom(id)}}
- if(lastRoom==='__closed'&&id!==cur&&!r)lastRoom=null;
+// ---------- loop ----------
+const clock=new THREE.Clock();const camPos=new THREE.Vector3(),look=new THREE.Vector3();
+function step(dt,t){
+ // movement relative to camera yaw
+ let ix=0,iz=0;if(keys.arrowleft||keys.a)ix-=1;if(keys.arrowright||keys.d)ix+=1;if(keys.arrowup||keys.w)iz-=1;if(keys.arrowdown||keys.s)iz+=1;
+ const acc=new THREE.Vector3();
+ if(ix||iz){target=null;const f=new THREE.Vector3(-Math.sin(yaw),0,-Math.cos(yaw)),r=new THREE.Vector3(Math.cos(yaw),0,-Math.sin(yaw));acc.addScaledVector(f,-iz).addScaledVector(r,ix).normalize().multiplyScalar(90)}
+ else if(target){const d=new THREE.Vector3(target.x-P.pos.x,0,target.z-P.pos.z);const L=d.length();if(L<.8)target=null;else acc.copy(d.normalize().multiplyScalar(90*Math.min(1,L/14)))}
+ P.vel.addScaledVector(acc,dt);P.vel.multiplyScalar(Math.pow(0.04,dt));P.pos.addScaledVector(P.vel,dt);
+ P.pos.x=Math.max(-66,Math.min(66,P.pos.x));P.pos.z=Math.max(-46,Math.min(45,P.pos.z));P.pos.y=LEVEL[floor];
+ const sp=P.vel.length();player.position.set(P.pos.x,P.pos.y+2.6+Math.sin(t*2.2)*.35,P.pos.z);const star=player.getObjectByName('star');star.rotation.z+=dt*(0.8+sp*.08);star.rotation.y=Math.sin(t*.8)*.4+P.vel.x*.01;star.rotation.x=-0.3+P.vel.z*.01;
+ trailPos.set([player.position.x,player.position.y-.4,player.position.z],(ti%TN)*3);if(sp>2||t%0.1<dt)ti++;trailGeo.attributes.position.needsUpdate=true;
+ // zones
+ const z=zoneAt(P.pos);if(z!==lastZone){lastZone=z;if(z&&z!==closedZone){if(z.startsWith('team:'))openTeam(TEAM.find(m=>'team:'+m.id===z));else openRoom(z)}if(!z)closedZone=null}
+ // highlight current room
+ for(const k in ROOMOBJ){const o=ROOMOBJ[k];const here=k===lastZone;o.edge.material.color.set(here?0xF2B766:0xffffff)}
+ // team bob + face camera ring pulse
+ for(const o of TEAMOBJ){o.spr.position.y=4.2+Math.sin(t*1.6+o.t.x)*.25;o.ring.scale.setScalar(1+Math.sin(t*3+o.t.y)*.06)}
+ // orbiting speakers, nudged by the star
+ for(const o of ORB){o.a+=o.sp*dt;const base=new THREE.Vector3(ORBC.x+Math.cos(o.a)*o.r,o.h+Math.sin(t+o.bob)*.6,ORBC.z+Math.sin(o.a)*o.r*.8);const wp=base.clone().add(o.off);
+  if(floor===0){const d=new THREE.Vector3(wp.x-P.pos.x,0,wp.z-P.pos.z);const L=d.length();if(L<7)o.off.addScaledVector(d.normalize(),(7-L)*dt*3)}o.off.multiplyScalar(Math.pow(0.4,dt));o.spr.position.copy(wp)}
  // sparks
- for(const s of SPARKS){if(!s.got&&s.f===floor&&Math.hypot(s.x-P.x,s.y-P.y)<34){s.got=1;found++;document.getElementById('fc').textContent=found;burst(s.x,s.y,'#F2B766');toast(`Discovery ${found} of ${SPARKS.length}`,s.tip);if(found===SPARKS.length)setTimeout(()=>toast('You found them all!','See you at Friends House. Doors open from 08:15 on Wednesday.'),4200)}}
- // orbit speakers in The Light, nudged away by the star
- if(floor===0){const cxL=1060,cyL=470;for(const o of orb){o.ang+=o.sp*0.01*dt;let x=cxL+Math.cos(o.ang)*o.r,y=cyL+Math.sin(o.ang)*o.r*0.8;const dx=x+o.ox-P.x,dy=y+o.oy-P.y,d=Math.hypot(dx,dy);if(d<70){o.ox+=dx/d*(70-d)*0.08*dt;o.oy+=dy/d*(70-d)*0.08*dt}o.ox*=Math.pow(0.95,dt);o.oy*=Math.pow(0.95,dt);o.x=x+o.ox;o.y=y+o.oy}}
- for(const p of parts){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=.95;p.vy*=.95;p.l-=0.02*dt}for(let i=parts.length-1;i>=0;i--)if(parts[i].l<=0)parts.splice(i,1);
- for(const p of trail)p.l-=0.025*dt;while(trail.length&&trail[0].l<=0)trail.shift();
- for(const r2 of rips){r2.r+=2*dt;r2.l-=0.03*dt}for(let i=rips.length-1;i>=0;i--)if(rips[i].l<=0)rips.splice(i,1);
+ for(const o of SPOBJ){if(o.s.got)continue;o.m.rotation.y+=dt*1.5;o.g.position.y=2.4+Math.sin(t*2+o.s.x)*.4;
+  if(o.s.f===floor&&Math.hypot(o.g.position.x-P.pos.x,o.g.position.z-P.pos.z)<3.2){o.s.got=1;found++;document.getElementById('fc').textContent=found;burst(o.g.getWorldPosition(new THREE.Vector3()));o.g.visible=false;toast(`Discovery ${found} of ${SPARKS.length}`,o.s.tip);if(found===SPARKS.length)setTimeout(()=>toast('You found them all!','See you at Friends House. Doors open at 08:15 on Wednesday.'),4300)}}
+ // bursts
+ for(let i=bursts.length-1;i>=0;i--){const b=bursts[i];b.l-=dt*1.1;const a=b.pts.geometry.attributes.position;for(let j=0;j<b.v.length;j++){a.array[j*3]+=b.v[j].x;a.array[j*3+1]+=b.v[j].y;a.array[j*3+2]+=b.v[j].z;b.v[j].multiplyScalar(.94)}a.needsUpdate=true;b.pts.material.opacity=Math.max(0,b.l);if(b.l<=0){scene.remove(b.pts);bursts.splice(i,1)}}
+ // camera follow
+ const fx=P.pos.x*0.5,fz=P.pos.z*0.5;const want=new THREE.Vector3(fx+Math.sin(yaw)*Math.cos(pitch)*dist,P.pos.y+Math.sin(pitch)*dist,fz+Math.cos(yaw)*Math.cos(pitch)*dist);
+ camPos.lerp(want,1-Math.pow(0.002,dt));look.lerp(new THREE.Vector3(fx,P.pos.y+2,fz),1-Math.pow(0.001,dt));camera.position.copy(camPos);camera.lookAt(look);
 }
-
-function rr(x,y,w,h,r){cx.beginPath();cx.moveTo(x+r,y);cx.arcTo(x+w,y,x+w,y+h,r);cx.arcTo(x+w,y+h,x,y+h,r);cx.arcTo(x,y+h,x,y,r);cx.arcTo(x,y,x+w,y,r);cx.closePath()}
-function open(id){if(['sarah','marjorie','vc'].includes(id))return day==='fri';if(id==='waldo')return day==='fri';return true}
-function draw(time){
- cx.setTransform(DPR,0,0,DPR,0,0);
- // sky background with drifting stars
- const g=cx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#16203A');g.addColorStop(1,'#0E1528');cx.fillStyle=g;cx.fillRect(0,0,W,H);
- for(let i=0;i<70;i++){const sx=(i*137.5+time*0.004*(1+i%3))%W,sy=(i*91.7)%H,tw=.3+.3*Math.sin(time*0.002+i);cx.fillStyle=`rgba(255,240,210,${tw*0.5})`;cx.fillRect(sx,sy,1.6,1.6)}
- cx.setTransform(DPR*S,0,0,DPR*S,DPR*OX,DPR*OY);
- // building slab
- cx.save();cx.shadowColor='rgba(0,0,0,.45)';cx.shadowBlur=40;cx.shadowOffsetY=18;cx.fillStyle='#F4EEE1';rr(300,50,1300,880,28);cx.fill();cx.restore();
- cx.fillStyle='rgba(20,30,60,.04)';for(let x=320;x<1590;x+=40)cx.fillRect(x,60,1,860);
- cx.font='600 15px Inter';cx.fillStyle='rgba(22,32,58,.55)';cx.fillText(FLOORS[floor].name.toUpperCase(),320,40);
- // rooms
- for(const r of FLOORS[floor].rooms){const on=open(r.id),here=cur===r.id;cx.save();cx.globalAlpha=on?1:.35;
-  cx.fillStyle=r.c;rr(r.x,r.y,r.w,r.h,r.v?10:18);cx.fill();
-  if(here){cx.lineWidth=4;cx.strokeStyle='#16203A';cx.stroke()}else{cx.lineWidth=1.5;cx.strokeStyle='rgba(22,32,58,.25)';cx.stroke()}
-  if(r.id==='light'){ // stage + seating arcs
-   cx.fillStyle='#16203A';rr(r.x+140,r.y+26,200,34,8);cx.fill();cx.fillStyle='#F2B766';cx.font='600 12px Inter';cx.textAlign='center';cx.fillText('STAGE',r.x+240,r.y+48);
-   cx.strokeStyle='rgba(22,32,58,.18)';cx.lineWidth=2;for(let i=0;i<7;i++){cx.beginPath();cx.ellipse(r.x+240,r.y+60,120+i*28,80+i*44,0,0.15*Math.PI,0.85*Math.PI);cx.stroke()}}
-  cx.restore();
-  // label
-  cx.save();cx.globalAlpha=on?1:.55;cx.textAlign='center';cx.fillStyle='#16203A';
-  if(r.v){cx.translate(r.x+r.w/2,r.y+r.h/2);cx.rotate(-Math.PI/2);cx.font='700 15px Inter';cx.fillText('COFFEE',0,5)}
-  else{cx.font=`${r.big?'italic 400 44px':'700 19px'} Cardo`;const ly=r.id==='light'?r.y+r.h-40:r.y+r.h/2;cx.fillText(r.name,r.x+r.w/2,ly);cx.font='500 12px Inter';cx.fillStyle='rgba(22,32,58,.65)';cx.fillText(on?r.k.toUpperCase():'FRIDAY ONLY',r.x+r.w/2,ly+20)}
-  cx.restore()}
- for(const d of FLOORS[floor].doors){cx.fillStyle='#E8894A';cx.beginPath();cx.arc(d.x,d.y,9,0,6.28);cx.fill();cx.font='600 13px Inter';cx.textAlign=d.left?'left':'right';cx.fillStyle='#16203A';if(d.below)cx.fillText(d.t,d.x-4,d.y+28);else cx.fillText(d.t,d.left?d.x+16:d.x-16,d.y+5)}
- // speakers orbiting
- if(floor===0){for(const o of orb){if(!o.x)continue;cx.save();cx.beginPath();cx.arc(o.x,o.y,17,0,6.28);cx.fillStyle='#fff';cx.fill();cx.clip();if(o.im.complete&&o.im.naturalWidth)cx.drawImage(o.im,o.x-17,o.y-20,34,40);cx.restore();cx.strokeStyle='rgba(255,255,255,.95)';cx.lineWidth=2.5;cx.beginPath();cx.arc(o.x,o.y,17,0,6.28);cx.stroke()}}
- // sparks
- for(const s of SPARKS){if(s.got||s.f!==floor)continue;const p=1+.25*Math.sin(time*0.005+s.x);cx.save();cx.translate(s.x,s.y);cx.rotate(time*0.001);cx.fillStyle='rgba(242,183,102,.25)';cx.beginPath();cx.arc(0,0,22*p,0,6.28);cx.fill();star(0,0,10*p,4.5*p,'#E8894A');cx.restore()}
- // ripples, trail, particles
- for(const r2 of rips){cx.strokeStyle=`rgba(232,137,74,${r2.l})`;cx.lineWidth=2;cx.beginPath();cx.arc(r2.x,r2.y,r2.r,0,6.28);cx.stroke()}
- for(const p of trail){cx.fillStyle=`rgba(242,183,102,${p.l*0.55})`;cx.beginPath();cx.arc(p.x,p.y,6*p.l,0,6.28);cx.fill()}
- for(const p of parts){cx.fillStyle=p.c;cx.globalAlpha=Math.max(0,p.l);cx.beginPath();cx.arc(p.x,p.y,3,0,6.28);cx.fill();cx.globalAlpha=1}
- // the player star
- cx.save();cx.translate(P.x,P.y);const glow=cx.createRadialGradient(0,0,0,0,0,40);glow.addColorStop(0,'rgba(242,183,102,.55)');glow.addColorStop(1,'rgba(242,183,102,0)');cx.fillStyle=glow;cx.beginPath();cx.arc(0,0,40,0,6.28);cx.fill();cx.rotate(P.a);star(0,0,18,7,'#16203A');star(0,0,9,3.5,'#F2B766');cx.restore();
-}
-function star(x,y,R,r,c){cx.beginPath();for(let i=0;i<16;i++){const a=i*Math.PI/8,rad=i%2?r:R;cx.lineTo(x+Math.cos(a)*rad,y+Math.sin(a)*rad)}cx.closePath();cx.fillStyle=c;cx.fill()}
-
-let last=performance.now();function loop(now){const dt=Math.min(3,(now-last)/16.67);last=now;step(dt);draw(now);requestAnimationFrame(loop)}
-fetch('assets/programme.json').then(r=>r.json()).then(j=>{PROG=j;buildOrb();if(cur)openRoom(cur)});
-resize();requestAnimationFrame(loop);
-document.getElementById('start').onclick=()=>{document.getElementById('intro').remove();toast('Welcome to Friends House','You are at the Euston Road entrance. Glide into The Light to meet the speakers.');setTimeout(()=>document.getElementById('hint').style.opacity=.0,9000)};
+function loop(){const dt=Math.min(.05,clock.getDelta()),t=clock.elapsedTime;step(dt,t);renderer.render(scene,camera);labels.render(scene,camera);requestAnimationFrame(loop)}
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);labels.setSize(innerWidth,innerHeight)});
+camPos.set(P.pos.x+30,60,P.pos.z+60);look.copy(P.pos);
+fetch('assets/programme.json').then(r=>r.json()).then(j=>{PROG=j;setDay('wed')});
+for(const k in ROOMOBJ)ROOMOBJ[k].lab.visible=ROOMOBJ[k].f===0;floors[1].visible=false;
+loop();document.getElementById('load').textContent='';
+document.getElementById('start').onclick=()=>{document.getElementById('intro').remove();toast('Welcome to Friends House','You are at the Euston Road entrance. Celal and Anastasia are here to help. Fly into The Light to meet the speakers.');setTimeout(()=>document.getElementById('hint').style.opacity=0,10000)};
+window.__dbg={P,goFloor,setDay,openRoom,TEAM,flyTo};
 </script>
 </body>
 </html>
