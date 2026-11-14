@@ -96,7 +96,7 @@ const FH=[ // ground floor schematic (2D plan units, x 300..1600, y 50..930)
  {id:'ada',name:'Ada Salter',k:'Patrons and speakers',x:820,y:80,w:480,h:100,c:0xef9f90,h3:4},
  {id:'cw',name:'Coffee',k:'Side corridor',x:752,y:200,w:56,h:500,c:0xf6d39a,h3:1.5},
  {id:'ce',name:'Coffee',k:'Side corridor',x:1312,y:200,w:56,h:500,c:0xf6d39a,h3:1.5},
- {id:'foyer',name:'Check-in',k:'Entrance foyer',x:1384,y:420,w:190,h:330,c:0x9fbdf0,h3:2.5},
+ {id:'foyer',name:'Check-in',k:'Entrance foyer · Euston Road',x:752,y:722,w:616,h:120,c:0x9fbdf0,h3:2},
  {id:'stairs',name:'Stairs and lift',k:'To the first floor',x:1384,y:220,w:150,h:170,c:0xc9b8f5,h3:3},
  {id:'waldo',name:'Waldo Williams',k:'Innovate UK room',x:330,y:80,w:400,h:170,c:0xd8c06c,h3:3.5},
  {id:'court',name:'Courtyard',k:'Open air',x:330,y:290,w:390,h:340,c:0x7fd38a,h3:.4},
@@ -114,11 +114,11 @@ const TEAM=[
  {id:'clare',n:'Clare Maguire',r:'Co-founder and COO',img:'assets/team/clare.png',x:1060,y:243,f:0,html:'<p>Runs the Summit day to day, from the venue to the volunteers.</p><p>Questions before or during the Summit: <a href="mailto:clare@thinkingaboutthinking.org">clare@thinkingaboutthinking.org</a></p>'},
  {id:'ruairidh',n:'Dr Ruairidh Battleday',r:'Co-founder and CEO',img:'assets/team/ruairidh.png',x:985,y:243,f:0,html:'<p>Opens the Summit on Wednesday at 08:40 and chairs sessions across the three days.</p>'},
  {id:'james',n:'Prof James Whittington',r:'Co-founder and CSO',img:'assets/team/james.png',x:1135,y:243,f:0,html:'<p>Gives a keynote on Wednesday at 09:00, then chairs the fireside chat <i>AI that discovers</i> with Pushmeet Kohli.</p>'},
- {id:'celal',n:'Celal',r:'Head of Volunteers',img:'assets/team/celal.jpg',x:1425,y:500,f:0,html:'<p>Leads the volunteer team and the front desk. Can\'t find your lanyard, or need help on the day? Find Celal at check-in.</p>'},
- {id:'anastasia',n:'Anastasia Ilina',r:'Speaker liaison',img:'assets/team/anastasia.png',x:1535,y:500,f:0,html:'<p>Looks after speakers and Patrons: the speakers desk, the Patron room in Ada Salter, and getting speakers miced up and ready to go on.</p>'},
+ {id:'celal',n:'Celal',r:'Head of Volunteers',img:'assets/team/celal.jpg',x:930,y:782,f:0,html:'<p>Leads the volunteer team and the front desk. Can\'t find your lanyard, or need help on the day? Find Celal at check-in.</p>'},
+ {id:'anastasia',n:'Anastasia Ilina',r:'Speaker liaison',img:'assets/team/anastasia.png',x:1250,y:782,f:0,html:'<p>Looks after speakers and Patrons: the speakers desk, the Patron room in Ada Salter, and getting speakers miced up and ready to go on.</p>'},
  {id:'gargi',n:'Gargi Bannur',r:'Main room operations',img:'assets/team/gargi.jpg',x:1250,y:330,f:0,html:'<p>Runs The Light: the doors, seating and the roving microphones for audience questions.</p>'}];
 const SPARKS=[
- {f:0,x:1430,y:660,tip:'Lanyards are laid out by first name. Find the table with your first letter.'},
+ {f:0,x:830,y:782,tip:'Lanyards are laid out by first name. Find the table with your first letter.'},
  {f:0,x:780,y:330,tip:'Tea and coffee is in the side corridors at the morning break.'},
  {f:0,x:1060,y:150,tip:'Speakers wait in Ada Salter, just behind the stage.'},
  {f:0,x:430,y:345,tip:'The courtyard is the quiet spot for a conversation between sessions.'},
@@ -139,7 +139,7 @@ function lightHTML(d){const D=DAYS[d],P=PROG[d];let h=`<span class="tag live">St
  h+=`<div class="sess"><div class="t">${esc(s.t.split(' to ')[0])}</div><div><b>${esc(s.title)}</b>${s.people.length?`<div class="faces">${s.people.map(face).join('')}</div>`:''}</div></div>`}
  return h+`<div class="who" id="who"></div><a class="btn" href="${SITE}/programme" target="_blank" rel="noopener">Full programme</a>`}
 const closedFri=(t,s)=>({k:'Friday only',t,s,html:`<span class="tag closed">Friday only</span><p>Open on Friday 27 November for the Startup Expo.</p><div class="go"><button data-day="fri">Show Friday</button></div>`});
-const coffee=d=>({k:'Ground floor',t:'Coffee',s:'Side corridors next to The Light',html:`<span class="tag live">${DAYS[d].coffee}</span><p>Tea and coffee for everyone at the morning break, in the side corridors either side of The Light.</p>`});
+const coffee=d=>({k:'Ground floor',t:'Coffee',s:'Side corridors next to The Light',html:`<span class="tag live">${DAYS[d].coffee}</span><p>Tea and coffee for everyone at the morning break, at the coffee stations in the side corridors either side of The Light. From check-in, walk straight through.</p>`});
 const INFO={
  light:d=>({k:'Main hall · ground floor',t:'The Light',s:DAYS[d].theme,html:lightHTML(d)}),
  ada:d=>({k:'Ground floor',t:'Ada Salter Suite',s:'The Patron and speaker room',html:`<span class="tag">Patrons and speakers</span><p>Behind the stage. Patrons and speakers have refreshments and lunch here, and speakers wait here before going on.</p><a class="btn" href="${TICKETS}" target="_blank" rel="noopener">See passes</a>`}),
@@ -170,7 +170,7 @@ scene.add(new THREE.HemisphereLight(0xbfd2ff,0x1a1020,0.9));const sun=new THREE.
 {const g=new THREE.BufferGeometry(),n=2500,p=new Float32Array(n*3);for(let i=0;i<n;i++){const r=400+Math.random()*600,a=Math.random()*6.28,b=Math.acos(2*Math.random()-1);p[i*3]=r*Math.sin(b)*Math.cos(a);p[i*3+1]=Math.abs(r*Math.cos(b))*0.8-60;p[i*3+2]=r*Math.sin(b)*Math.sin(a)}g.setAttribute('position',new THREE.BufferAttribute(p,3));scene.add(new THREE.Points(g,new THREE.PointsMaterial({color:0xfff1d6,size:1.6,sizeAttenuation:false,transparent:true,opacity:.85})))}
 // glow sprite texture
 function glowTex(c='255,205,140'){const cv=document.createElement('canvas');cv.width=cv.height=128;const x=cv.getContext('2d');const g=x.createRadialGradient(64,64,0,64,64,64);g.addColorStop(0,`rgba(${c},1)`);g.addColorStop(.3,`rgba(${c},.5)`);g.addColorStop(1,`rgba(${c},0)`);x.fillStyle=g;x.fillRect(0,0,128,128);const t=new THREE.CanvasTexture(cv);return t}
-const GLOW=glowTex();
+const GLOW=glowTex();const STEAM=[];
 function circleTex(url,ring='#F2B766',cb){const img=new Image();const cv=document.createElement('canvas');cv.width=cv.height=256;const t=new THREE.CanvasTexture(cv);t.colorSpace=THREE.SRGBColorSpace;img.onload=()=>{const x=cv.getContext('2d');x.save();x.beginPath();x.arc(128,128,116,0,6.28);x.clip();const s=Math.max(232/img.width,232/img.height),w=img.width*s,h=img.height*s;x.drawImage(img,128-w/2,128-h/2-h*0.08,w,h);x.restore();x.lineWidth=12;x.strokeStyle=ring;x.beginPath();x.arc(128,128,118,0,6.28);x.stroke();t.needsUpdate=true;cb&&cb()};img.src=url;return t}
 function label(html,cls,pos,parent){const d=document.createElement('div');d.className=cls;d.innerHTML=html;const o=new CSS2DObject(d);o.position.copy(pos);(parent||scene).add(o);return o}
 
@@ -192,7 +192,14 @@ buildRooms(FH,0);buildRooms(F1,1);
 {const L=ROOMOBJ.light;L.mat.opacity=.32;const st=new THREE.Mesh(new THREE.BoxGeometry(20,1.2,4),new THREE.MeshStandardMaterial({color:0x0E1630,emissive:0x1b2a55,emissiveIntensity:.5}));const p=W(1060,243);st.position.set(p.x,0.6,p.z);floors[0].add(st);
  for(let i=0;i<7;i++){const t=new THREE.Mesh(new THREE.TorusGeometry(10+i*3,0.18,6,48,Math.PI*0.8),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.35}));t.rotation.x=Math.PI/2;t.rotation.z=Math.PI*0.1;t.position.set(p.x,0.3+i*0.35,p.z+2);floors[0].add(t)}}
 // doors
-label('Euston Road entrance','dl',W(1600,712).add(new THREE.Vector3(0,1.5,0)),floors[0]);label('Garden entrance','dl',W(300,460).add(new THREE.Vector3(0,1.5,0)),floors[0]);
+label('Euston Road entrance ↓','dl',W(1060,860).add(new THREE.Vector3(0,1.5,0)),floors[0]);label('Garden entrance','dl',W(300,460).add(new THREE.Vector3(0,1.5,0)),floors[0]);
+// coffee stations in both side corridors
+{const steamTex=glowTex('255,255,255');for(const x of [780,1340])for(const y of [280,450,620]){const p=W(x,y);const g=new THREE.Group();g.position.set(p.x,0,p.z);floors[0].add(g);
+ const counter=new THREE.Mesh(new THREE.BoxGeometry(3.2,1.6,4.2),new THREE.MeshStandardMaterial({color:0x3a2a1c,roughness:.6}));counter.position.y=.8;g.add(counter);
+ const top=new THREE.Mesh(new THREE.BoxGeometry(3.4,.15,4.4),new THREE.MeshStandardMaterial({color:0xf6ead2}));top.position.y=1.65;g.add(top);
+ for(const dz of [-1.2,0,1.2]){const cup=new THREE.Mesh(new THREE.CylinderGeometry(.32,.24,.6,16),new THREE.MeshStandardMaterial({color:0xffffff,emissive:0xF2B766,emissiveIntensity:.15}));cup.position.set(0,2,dz);g.add(cup);
+  const st=new THREE.Sprite(new THREE.SpriteMaterial({map:steamTex,transparent:true,opacity:.35,depthWrite:false}));st.scale.set(1,1.6,1);st.position.set(0,2.9,dz);st.userData.steam=Math.random()*6;g.add(st);STEAM.push(st)}
+ if(y===450)label('☕ Coffee','dl',new THREE.Vector3(0,4.6,0),g)}}
 // connector beam between floors at the stairs
 {const p=W(1459,305);const beam=new THREE.Mesh(new THREE.CylinderGeometry(.5,.5,LEVEL[1],12,1,true),new THREE.MeshBasicMaterial({color:0xF2B766,transparent:true,opacity:.35}));beam.position.set(p.x,LEVEL[1]/2,p.z);scene.add(beam)}
 
@@ -235,7 +242,7 @@ const bursts=[];function burst(pos){const n=60,g=new THREE.BufferGeometry(),p=ne
 
 // ---------- state ----------
 let day='wed',floor=0,cur=null,lastZone=null,closedZone=null,found=0;
-const P={pos:W(1480,690),vel:new THREE.Vector3()};let target=null;const keys={};
+const P={pos:W(1060,800),vel:new THREE.Vector3()};let target=null;const keys={};
 let yaw=0.08,pitch=0.9,dist=90;
 function setDay(d){day=d;document.querySelectorAll('#days button').forEach(b=>b.classList.toggle('on',b.dataset.d===d));buildOrb();
  for(const id of FRIONLY){const o=ROOMOBJ[id];const on=d==='fri';o.mat.opacity=on?.86:.25;o.mat.emissiveIntensity=on?.35:.02;o.edge.material.opacity=on?.8:.2;o.lab.element.classList.toggle('dim',!on)}
@@ -294,6 +301,7 @@ function step(dt,t){
  const z=zoneAt(P.pos);if(z!==lastZone){lastZone=z;if(z&&z!==closedZone){if(z.startsWith('team:'))openTeam(TEAM.find(m=>'team:'+m.id===z));else openRoom(z)}if(!z)closedZone=null}
  // highlight current room
  for(const k in ROOMOBJ){const o=ROOMOBJ[k];const here=k===lastZone;o.edge.material.color.set(here?0xF2B766:0xffffff)}
+ for(const st of STEAM){st.userData.steam+=dt;const k=(st.userData.steam%2)/2;st.position.y=2.6+k*1.6;st.material.opacity=.4*(1-k)}
  // team bob + face camera ring pulse
  for(const o of TEAMOBJ){o.spr.position.y=4.2+Math.sin(t*1.6+o.t.x)*.25;o.ring.scale.setScalar(1+Math.sin(t*3+o.t.y)*.06)}
  // orbiting speakers, nudged by the star
